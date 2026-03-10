@@ -1,0 +1,241 @@
+:root {
+  --bg-a: #f4f7fb;
+  --bg-b: #edf2f8;
+  --ink-a: #111827;
+  --ink-b: #374151;
+  --stroke: #d1d8e1;
+  --card: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 620px at 8% 0%, rgba(255,153,82,0.22), transparent 70%),
+    radial-gradient(900px 560px at 88% 0%, rgba(52,214,196,0.18), transparent 58%),
+    linear-gradient(140deg, #121927 0%, #101a2d 45%, #1b2333 100%);
+    /* linear-gradient(160deg, var(--bg-a), var(--bg-b)); */
+  color: var(--ink-a);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.shell {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto 3rem;
+  padding-top: 1rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.intro {
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid var(--stroke);
+  border-radius: 16px;
+  padding: 1.2rem 1.3rem;
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.06);
+}
+
+.kicker {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4b5563;
+}
+
+.intro h1 {
+  margin: 0.45rem 0 0.55rem;
+  font-size: clamp(1.7rem, 3.8vw, 2.4rem);
+  line-height: 1.2;
+}
+
+.intro p {
+  margin: 0;
+  color: var(--ink-b);
+  max-width: 70ch;
+}
+
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.85rem;
+}
+
+.group-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.group-card {
+  border: 1px solid var(--stroke);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 8px 14px rgba(17, 24, 39, 0.04);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.group-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 18px rgba(17, 24, 39, 0.08);
+}
+
+.group-color {
+  height: 16px;
+  background: var(--group-color);
+}
+
+.group-content {
+  padding: 0.95rem 1rem;
+}
+
+.group-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.72rem;
+}
+
+.group-icon {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+}
+
+.group-content h2 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.32;
+}
+
+.section-shell {
+  width: min(980px, calc(100% - 2rem));
+  margin: 0 auto 3rem;
+  padding-top: 1rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.back-link {
+  display: inline-block;
+  color: #dbe7ff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.section-panel {
+  border: 1px solid var(--stroke);
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.section-top-border {
+  height: 8px;
+  background: var(--group-color);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.2rem 1.2rem 0.6rem;
+}
+
+.section-kicker {
+  margin: 0;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.section-header h1 {
+  margin: 0.3rem 0 0;
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+}
+
+.section-content {
+  padding: 0.2rem 1.2rem 1.2rem;
+  color: #334155;
+}
+
+.section-content p {
+  margin: 0.7rem 0 0;
+}
+
+.section-content h2 {
+  margin: 0.7rem 0 0;
+  font-size: 1.05rem;
+}
+
+.content-block-list {
+  margin: 0.8rem 0 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.content-block {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.7rem 0.8rem;
+  background: #ffffff;
+}
+
+.content-block h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.content-block-text {
+  margin: 0.45rem 0 0;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.section-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+  border-top: 1px solid #e2e8f0;
+  padding: 0.9rem 1.2rem 1rem;
+}
+
+.section-nav-link {
+  display: inline-block;
+  color: #1d4ed8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.section-nav-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .shell {
+    width: min(1180px, calc(100% - 1rem));
+  }
+
+  .section-shell {
+    width: min(980px, calc(100% - 1rem));
+  }
+
+  .section-nav {
+    grid-template-columns: 1fr;
+  }
+}
