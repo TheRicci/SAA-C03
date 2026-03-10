@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
 
-import { pdfSectionGroups } from "./sectionsData";
+import { v3Groups } from "../sectionsDataV3";
 
 type GroupColorStyle = CSSProperties & { "--group-color": string };
 
@@ -11,13 +11,13 @@ export default function Page() {
     <main className="shell">
       <section className="intro">
         <p className="kicker">AWS Certified Solutions Architect - Associate</p>
-        <h1>SAA-C03 Study Map</h1>
+        <h1>SAA-C03 Study Map (V3)</h1>
         <p>Each card opens a dedicated section page with clean, focused study points.</p>
       </section>
 
-      <section className="group-grid" aria-label="SAA-C03 study sections">
-        {pdfSectionGroups.map((group) => (
-          <Link key={group.slug} className="group-link" href={`/sections/${group.slug}`}>
+      <section className="group-grid" aria-label="SAA-C03 v3 study sections">
+        {v3Groups.map((group) => (
+          <Link key={group.slug} className="group-link" href={`/v3/sections/${group.slug}`}>
             <article
               className="group-card"
               style={{ "--group-color": group.awsColor } as GroupColorStyle}

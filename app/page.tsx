@@ -2,9 +2,27 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
 
-import { examGroups } from "./sectionsDataV2";
+import v2Icon from "../Icon-package/Category-Icons_01302026/Arch-Category_64/Arch-Category_Management-Tools_64.png";
+import v3Icon from "../Icon-package/Category-Icons_01302026/Arch-Category_64/Arch-Category_Analytics_64.png";
 
-type GroupColorStyle = CSSProperties & { "--group-color": string };
+type ChoiceStyle = CSSProperties & { "--group-color": string };
+
+const versionChoices = [
+  {
+    slug: "v2",
+    name: "Version 2",
+    description: "Service groups aligned to the v2 content set.",
+    color: "#4C7BD9",
+    icon: v2Icon,
+  },
+  {
+    slug: "v3",
+    name: "Version 3",
+    description: "Updated groups and deeper subtopics from the v3 dataset.",
+    color: "#C87F0A",
+    icon: v3Icon,
+  },
+];
 
 export default function Page() {
   return (
@@ -12,27 +30,32 @@ export default function Page() {
       <section className="intro">
         <p className="kicker">AWS Certified Solutions Architect - Associate</p>
         <h1>SAA-C03 Study Map</h1>
-        <p>Each card opens a dedicated section page with clean, focused study points.</p>
+        <p>Select which content version you want to study.</p>
       </section>
 
-      <section className="group-grid" aria-label="SAA-C03 study sections">
-        {examGroups.map((group) => (
-          <Link key={group.slug} className="group-link" href={`/sections/${group.slug}`}>
+      <section className="group-grid" aria-label="SAA-C03 content versions">
+        {versionChoices.map((choice) => (
+          <Link key={choice.slug} className="group-link" href={`/${choice.slug}`}>
             <article
               className="group-card"
-              style={{ "--group-color": group.awsColor } as GroupColorStyle}
+              style={{ "--group-color": choice.color } as ChoiceStyle}
             >
               <div className="group-color" aria-hidden="true" />
               <div className="group-content">
                 <div className="group-heading">
                   <Image
-                    src={group.icon}
-                    alt={`${group.name} category icon`}
+                    src={choice.icon}
+                    alt={`${choice.name} category icon`}
                     width={38}
                     height={38}
                     className="group-icon"
                   />
-                  <h2>{group.name}</h2>
+                  <div>
+                    <h2>{choice.name}</h2>
+                    <p className="kicker" style={{ marginTop: "0.3rem" }}>
+                      {choice.description}
+                    </p>
+                  </div>
                 </div>
               </div>
             </article>
