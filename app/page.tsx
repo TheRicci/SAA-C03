@@ -2,18 +2,18 @@ import Link from "next/link";
 import Image from "next/image";
 import type { CSSProperties } from "react";
 
-import v2Icon from "../Icon-package/Category-Icons_01302026/Arch-Category_64/Arch-Category_Management-Tools_64.png";
+import cheatSheetIcon from "../Icon-package/Category-Icons_01302026/Arch-Category_64/Arch-Category_Management-Tools_64.png";
 import v3Icon from "../Icon-package/Category-Icons_01302026/Arch-Category_64/Arch-Category_Analytics_64.png";
 
 type ChoiceStyle = CSSProperties & { "--group-color": string };
 
 const versionChoices = [
   {
-    slug: "v2",
-    name: "Version 2",
-    description: "Service groups aligned to the v2 content set.",
+    slug: "cheatsheet",
+    name: "Cheat Sheet",
+    description: "Flip-card review mode across all services.",
     color: "#4C7BD9",
-    icon: v2Icon,
+    icon: cheatSheetIcon,
   },
   {
     slug: "v3",
@@ -30,7 +30,7 @@ export default function Page() {
       <section className="intro">
         <p className="kicker">AWS Certified Solutions Architect - Associate</p>
         <h1>SAA-C03 Study Map</h1>
-        <p>Select which content version you want to study.</p>
+        <p>Select your study mode.</p>
       </section>
 
       <section className="group-grid" aria-label="SAA-C03 content versions">

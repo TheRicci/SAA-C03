@@ -1,0 +1,1981 @@
+{
+    "analytics": {
+      "amazon-athena": {
+        "what": "Serverless SQL queries directly on S3",
+        "key": [
+          "$5/TB scanned",
+          "Presto engine",
+          "Supports CSV/JSON/Parquet/ORC",
+          "Glue Data Catalog for schema",
+          "Workgroups for cost isolation"
+        ],
+        "trap": [
+          "Use Parquet+partitions to cut cost 87%",
+          "Not for OLTP or real-time",
+          "Need Glue Crawler first for schema"
+        ],
+        "when": "Ad-hoc SQL on S3 data, log analysis (CloudTrail, VPC Flow Logs)"
+      },
+      "aws-data-exchange": {
+        "what": "Subscribe to 3rd-party datasets, delivered to S3",
+        "key": [
+          "Auto-delivers new revisions to S3",
+          "Billing via AWS Marketplace",
+          "Use with Athena/Redshift/EMR"
+        ],
+        "trap": [
+          "Not a migration tool — ongoing data subscription"
+        ],
+        "when": "Need external financial, weather, geospatial data without building ingestion"
+      },
+      "amazon-data-firehose": {
+        "what": "Managed near-real-time streaming data delivery",
+        "key": [
+          "Destinations: S3, Redshift, OpenSearch, Splunk, HTTP",
+          "Buffer: 1-128MB or 60-900s",
+          "Lambda transform in-flight",
+          "No servers to manage"
+        ],
+        "trap": [
+          "Near-real-time NOT real-time (buffered)",
+          "KDS=real-time; Firehose=delivery/load"
+        ],
+        "when": "Load streaming data into S3/Redshift/OpenSearch without code"
+      },
+      "amazon-emr": {
+        "what": "Managed Hadoop/Spark cluster for big data",
+        "key": [
+          "Master / Core / Task nodes",
+          "Task nodes = Spot-safe (no HDFS)",
+          "EMRFS = S3-backed persistent storage",
+          "Supports Spark, Hive, Presto, Flink"
+        ],
+        "trap": [
+          "Use Spot for task nodes only — core nodes hold data"
+        ],
+        "when": "Large-scale ETL, ML training, log analysis at petabyte scale"
+      },
+      "aws-glue": {
+        "what": "Serverless ETL + metadata catalog",
+        "key": [
+          "Crawler: auto-discovers schema → Data Catalog",
+          "ETL jobs in Python/Scala",
+          "Job Bookmarks: avoid reprocessing",
+          "DataBrew: no-code data prep",
+          "Streaming ETL from Kinesis/Kafka"
+        ],
+        "trap": [
+          "Data Catalog integrates with Athena/Redshift Spectrum/EMR",
+          "Glue ≠ DMS — Glue is for analytics ETL, DMS for DB migration"
+        ],
+        "when": "Build data lake pipelines, convert CSV to Parquet, catalog S3 data"
+      },
+      "amazon-kinesis": {
+        "what": "Real-time data streaming platform",
+        "key": [
+          "KDS: 1MB/s write, 2MB/s read per shard",
+          "Retention 1-365 days",
+          "Firehose: near-real-time delivery",
+          "Analytics: SQL/Flink on streams",
+          "On-demand or provisioned capacity"
+        ],
+        "trap": [
+          "KDS=real-time custom consumers; Firehose=managed delivery",
+          "1MB max record size"
+        ],
+        "when": "Real-time clickstream, IoT telemetry, log ingestion"
+      },
+      "aws-lake-formation": {
+        "what": "Build and secure S3 data lakes with fine-grained access",
+        "key": [
+          "Column/row/cell-level permissions",
+          "Cross-account data sharing",
+          "LF-Tags for ABAC at scale",
+          "Sits on top of S3 + Glue"
+        ],
+        "trap": [
+          "Replaces complex S3 bucket policy + IAM combos",
+          "Use when fine-grained data lake access control is needed"
+        ],
+        "when": "Multiple teams/accounts need different access to same data lake"
+      },
+      "amazon-managed-streaming-for-apache-kafka": {
+        "what": "Fully managed Apache Kafka",
+        "key": [
+          "Multi-AZ, auto-failover",
+          "MSK Connect: Kafka Connect workers",
+          "MSK Serverless available",
+          "Max message: 10MB (vs 1MB Kinesis)",
+          "Data persisted on EBS"
+        ],
+        "trap": [
+          "MSK=bring existing Kafka workloads; KDS=AWS-native streaming"
+        ],
+        "when": "Migrate existing Kafka apps to AWS or need Kafka ecosystem tools"
+      },
+      "amazon-opensearch-service": {
+        "what": "Managed search and log analytics (Elasticsearch successor)",
+        "key": [
+          "OpenSearch Dashboards (Kibana)",
+          "Ingest from Kinesis Firehose, CloudWatch, Logstash",
+          "Multi-AZ deployment",
+          "ISM: auto-rollover/delete old indexes"
+        ],
+        "trap": [
+          "DynamoDB → Lambda → OpenSearch for searchable DynamoDB data",
+          "CloudWatch Logs → Subscription Filter → Lambda → OpenSearch"
+        ],
+        "when": "Full-text search, log/event analytics, real-time monitoring dashboards"
+      },
+      "amazon-quicksuite": {
+        "what": "Serverless BI and visualization",
+        "key": [
+          "SPICE: in-memory query engine",
+          "Pay-per-session pricing",
+          "ML Insights: anomaly + forecast built-in",
+          "Row/column level security",
+          "Sources: S3, Athena, RDS, Redshift"
+        ],
+        "trap": [
+          "QuickSight doesn't store data — queries sources directly",
+          "BI/visualization layer only"
+        ],
+        "when": "Dashboards and reports on top of Athena, Redshift, S3"
+      },
+      "amazon-redshift": {
+        "what": "Petabyte-scale managed data warehouse (OLAP)",
+        "key": [
+          "Columnar storage",
+          "Redshift Spectrum: query S3 without loading",
+          "Serverless option available",
+          "Snapshots cross-region",
+          "AQUA: hardware-accelerated cache",
+          "Concurrency Scaling: auto-adds read capacity"
+        ],
+        "trap": [
+          "NOT for OLTP — use RDS",
+          "Based on PostgreSQL but not same feature set"
+        ],
+        "when": "Complex analytics on large structured datasets, BI workloads"
+      }
+    },
+    "application-integration": {
+      "amazon-eventbridge": {
+        "what": "Serverless event bus for event-driven apps",
+        "key": [
+          "Default/Custom/Partner event buses",
+          "Rules: filter + route to 20+ targets",
+          "Schema Registry + Event Replay",
+          "Only service with direct SaaS integrations",
+          "Pipes: point-to-point with filtering"
+        ],
+        "trap": [
+          "Prefer over SNS for SaaS integrations",
+          "CloudWatch Events and EventBridge are same underlying API"
+        ],
+        "when": "Event-driven decoupling, react to AWS service events, SaaS integrations"
+      },
+      "amazon-simple-notification-service": {
+        "what": "Pub/Sub push messaging",
+        "key": [
+          "Topics → push to all subscribers",
+          "Protocols: HTTP, Email, SMS, Lambda, SQS, Mobile",
+          "Message filtering per subscriber",
+          "FIFO topics: ordered + dedup (SQS FIFO only)",
+          "Max 256KB message"
+        ],
+        "trap": [
+          "SNS=push; SQS=pull",
+          "Fan-out pattern: SNS → multiple SQS queues"
+        ],
+        "when": "Fan-out, alerts/notifications, trigger multiple consumers from one event"
+      },
+      "amazon-simple-queue-service": {
+        "what": "Managed message queue for decoupling",
+        "key": [
+          "Standard: unlimited throughput, at-least-once",
+          "FIFO: 300 TPS (3000 batched), exactly-once ordered",
+          "Visibility timeout: 0s-12h (default 30s)",
+          "Retention: 1min-14 days (default 4d)",
+          "DLQ for failed messages",
+          "Long polling: up to 20s"
+        ],
+        "trap": [
+          "Visibility timeout should be 6x Lambda timeout",
+          "FIFO max 300 TPS without batching"
+        ],
+        "when": "Decouple producers from consumers, absorb traffic spikes, async processing"
+      },
+      "aws-step-functions": {
+        "what": "Visual serverless workflow orchestration",
+        "key": [
+          "Standard: exactly-once, 1yr max, per-transition pricing",
+          "Express: at-least-once, 5min max, high-volume",
+          "States: Task/Choice/Wait/Parallel/Map/Pass/Succeed/Fail",
+          "waitForTaskToken: pause for human/external approval",
+          "Built-in retry + catch per state"
+        ],
+        "trap": [
+          "Don't chain Lambdas — use Step Functions for orchestration",
+          "Express max 5min; Standard for long-running"
+        ],
+        "when": "Multi-step workflows, human approval flows, complex error handling"
+      }
+    },
+    "aws-cost-management": {
+      "aws-budgets": {
+        "what": "Set spend/usage alerts and automated actions",
+        "key": [
+          "Types: Cost, Usage, Savings Plans, Reservation",
+          "Alert before or when threshold hit",
+          "Budget Actions: apply SCP/IAM or stop EC2/RDS",
+          "First 2 budgets free"
+        ],
+        "trap": [
+          "Budgets=proactive alerts; Cost Explorer=historical analysis"
+        ],
+        "when": "Get notified before overspending, auto-stop resources at budget limit"
+      },
+      "aws-cost-and-usage-report": {
+        "what": "Most granular AWS billing data",
+        "key": [
+          "Line-item per resource per hour",
+          "Delivered to S3 (CSV or Parquet)",
+          "Query with Athena",
+          "Updated hourly",
+          "Supports Organizations multi-account"
+        ],
+        "trap": [
+          "CUR=most detailed; Cost Explorer=visualization/forecasting"
+        ],
+        "when": "Detailed cost allocation, chargeback, custom billing analysis"
+      },
+      "aws-cost-explorer": {
+        "what": "Visualize and forecast AWS costs",
+        "key": [
+          "12mo history + 12mo forecast",
+          "Rightsizing recommendations",
+          "RI/Savings Plans recommendations",
+          "Cost Anomaly Detection (ML)",
+          "API: $0.01/request"
+        ],
+        "trap": [
+          "Cost Explorer=analysis; Budgets=alerts; CUR=raw data"
+        ],
+        "when": "Understand spending patterns, get RI/SP recommendations, forecast costs"
+      }
+    },
+    "compute": {
+      "amazon-ec2": {
+        "what": "Virtual servers in the cloud (IaaS)",
+        "key": [
+          "Purchasing: On-Demand/Reserved(72%off)/Spot(90%off)/Dedicated/Savings Plans",
+          "Types: General(t,m) Compute(c) Memory(r,x) Storage(i,d)",
+          "User Data: bootstrap script, runs once at first launch",
+          "Placement: Cluster/Spread/Partition",
+          "Hibernate: saves RAM to EBS, max 60 days"
+        ],
+        "trap": [
+          "Spot=2min warning before interruption",
+          "Never put access keys on EC2 — use IAM role",
+          "User Data runs as root, once only"
+        ],
+        "when": "Need full OS control, persistent long-running workloads, GPU instances"
+      },
+      "aws-elastic-beanstalk": {
+        "what": "PaaS — deploy apps without managing infra",
+        "key": [
+          "Supports: Node, Python, Java, .NET, Docker",
+          "Tiers: Web Server (ELB+EC2) + Worker (SQS+EC2)",
+          ".ebextensions for customization",
+          "Deployments: All-at-once/Rolling/Immutable/Blue-Green",
+          "Free — pay for underlying resources"
+        ],
+        "trap": [
+          "Immutable=safest; All-at-once=fastest with downtime",
+          "RDS inside EB env is deleted with env — use external RDS for prod"
+        ],
+        "when": "Quick app deployment, dev/test, teams without infra expertise"
+      },
+      "aws-lambda": {
+        "what": "Serverless functions, run code on demand",
+        "key": [
+          "Max 15min timeout, 10GB memory, 10GB /tmp",
+          "1000 concurrent default/region",
+          "Provisioned Concurrency: eliminates cold starts",
+          "Layers: share code across functions",
+          "VPC: needs NAT GW for internet access",
+          "SnapStart: Java cold start -90%"
+        ],
+        "trap": [
+          "Lambda in VPC loses internet — add NAT GW",
+          "SQS visibility timeout = 6x Lambda timeout",
+          "API GW hard limit 29s"
+        ],
+        "when": "Event-driven code <15min, APIs, file processing, scheduled tasks"
+      },
+      "aws-batch": {
+        "what": "Managed batch computing at any scale",
+        "key": [
+          "Docker-based jobs",
+          "Managed (AWS provisions EC2/Spot) or Unmanaged",
+          "Job Queue → Job Definition → Compute Environment",
+          "Spot support for cost optimization"
+        ],
+        "trap": [
+          "Batch=any runtime, long jobs; Lambda=short <15min event-driven"
+        ],
+        "when": "Genomics, rendering, financial modeling, ML training — long batch jobs"
+      },
+      "aws-app-runner": {
+        "what": "Deploy containers/source code as web apps instantly",
+        "key": [
+          "No infra management",
+          "Auto-scales to zero",
+          "Source: GitHub or ECR",
+          "Built-in LB + TLS + CI/CD"
+        ],
+        "trap": [
+          "Not for complex microservices — use ECS/EKS for that"
+        ],
+        "when": "Quickly deploy simple APIs or web apps from container/code without K8s expertise"
+      }
+    },
+    "containers": {
+      "amazon-elastic-container-registry": {
+        "what": "Private Docker image registry",
+        "key": [
+          "Lifecycle policies: auto-delete old images",
+          "Image scanning: CVE detection (Basic or Inspector)",
+          "Cross-region/cross-account replication",
+          "Immutable tags",
+          "IAM resource-based access"
+        ],
+        "trap": [
+          "Always pair with ECS/EKS for deployments"
+        ],
+        "when": "Store and manage Docker images for ECS/EKS deployments"
+      },
+      "amazon-elastic-container-service": {
+        "what": "AWS-native container orchestration",
+        "key": [
+          "Launch types: EC2 (you manage) or Fargate (serverless)",
+          "Task Definition: blueprint (image, CPU, memory, ports, role)",
+          "Task Role vs Instance Profile — use Task Role per task",
+          "ALB dynamic port mapping for microservices",
+          "EFS for shared persistent storage"
+        ],
+        "trap": [
+          "Task Role=per-task permissions; Instance Profile=EC2-level",
+          "EC2 launch type needs ECS Agent installed"
+        ],
+        "when": "Run containers on AWS, prefer AWS-native over Kubernetes"
+      },
+      "amazon-elastic-kubernetes-service": {
+        "what": "Managed Kubernetes control plane",
+        "key": [
+          "Node types: Managed Groups / Self-managed / Fargate",
+          "IRSA: IAM roles per pod via service accounts",
+          "Add-ons: CoreDNS, kube-proxy, VPC CNI, EBS CSI",
+          "EKS Anywhere: on-premises K8s"
+        ],
+        "trap": [
+          "ECS=AWS-native; EKS=Kubernetes-compatible — choose EKS for existing K8s workloads"
+        ],
+        "when": "Already using Kubernetes, need K8s ecosystem tools"
+      },
+      "aws-fargate": {
+        "what": "Serverless compute for containers (ECS + EKS)",
+        "key": [
+          "No EC2 to manage",
+          "Pay per vCPU/memory per second",
+          "Fargate Spot: up to 70% discount (interruptible)",
+          "200GB ephemeral storage per task",
+          "Use EFS for persistent storage"
+        ],
+        "trap": [
+          "Cannot use GPU or some specialized instance types — use EC2 launch type then",
+          "Each task is isolated compute environment"
+        ],
+        "when": "Containers without managing servers, variable workloads, serverless containers"
+      }
+    },
+    "database": {
+      "amazon-aurora": {
+        "what": "AWS-built high-performance MySQL/PostgreSQL",
+        "key": [
+          "5x faster MySQL, 3x faster PostgreSQL",
+          "6 copies across 3 AZs, self-healing",
+          "15 read replicas, failover <30s",
+          "Global DB: RPO<1s, RTO<1min",
+          "Serverless v2: fine-grained auto-scale",
+          "Backtrack: rewind DB without snapshot"
+        ],
+        "trap": [
+          "Global DB=active-passive (one writer region)",
+          "Aurora ≠ RDS — Aurora is AWS-built, not just managed"
+        ],
+        "when": "Best relational DB performance on AWS, MySQL/PostgreSQL, multi-region DR"
+      },
+      "amazon-documentdb": {
+        "what": "Managed MongoDB-compatible document database",
+        "key": [
+          "MongoDB 3.6/4.0 API compatible",
+          "Auto-scales storage to 64TB",
+          "6 copies across 3 AZs",
+          "Up to 15 read replicas"
+        ],
+        "trap": [
+          "Not actual MongoDB — uses Aurora storage tech",
+          "DocumentDB=MongoDB-compat; DynamoDB=AWS-native NoSQL"
+        ],
+        "when": "Migrate existing MongoDB workloads to AWS"
+      },
+      "amazon-dynamodb": {
+        "what": "Serverless key-value + document NoSQL",
+        "key": [
+          "Single-digit ms at any scale",
+          "Max item size: 400KB",
+          "TTL: free automatic item expiry",
+          "Global Tables: multi-region active-active",
+          "DAX: microsecond read cache",
+          "Streams → Lambda for CDC",
+          "PITR: 35 days"
+        ],
+        "trap": [
+          "Scan=reads entire table (expensive) — always use Query",
+          "On-Demand=unpredictable; Provisioned+ASG=steady/cheaper",
+          "FIFO Streams have ordering guarantee"
+        ],
+        "when": "Any scale NoSQL, serverless apps, gaming, session stores, real-time leaderboards"
+      },
+      "amazon-elasticache": {
+        "what": "In-memory caching (Redis or Memcached)",
+        "key": [
+          "Redis: Multi-AZ, persistence, pub/sub, sorted sets, backup",
+          "Memcached: multi-threaded, no persistence, simple horizontal scale",
+          "Sub-ms latency",
+          "Lazy loading vs Write-through caching strategies"
+        ],
+        "trap": [
+          "Redis=HA+persistence+complex data; Memcached=simple cache only",
+          "ElastiCache cannot cache DynamoDB — use DAX for that"
+        ],
+        "when": "Reduce DB read load, session storage, leaderboards, rate limiting"
+      },
+      "amazon-rds": {
+        "what": "Managed relational database (OLTP)",
+        "key": [
+          "Engines: MySQL, PostgreSQL, MariaDB, Oracle, SQL Server, Aurora",
+          "Multi-AZ: sync standby, auto-failover ~1-2min",
+          "Read Replicas: async, up to 5, cross-region",
+          "RDS Proxy: connection pooling for Lambda/ECS",
+          "Storage Auto Scaling",
+          "Automated backup 0-35 days"
+        ],
+        "trap": [
+          "Multi-AZ=HA not read scaling",
+          "Read Replicas=read scaling not HA",
+          "RDS Proxy=connection pooling not a load balancer"
+        ],
+        "when": "Standard relational DB needs, OLTP, structured data with SQL"
+      },
+      "amazon-redshift": {
+        "what": "Petabyte-scale data warehouse (OLAP)",
+        "key": [
+          "Columnar storage for aggregations",
+          "Spectrum: query S3 directly",
+          "Serverless option",
+          "Snapshots cross-region",
+          "ML: train models with SQL"
+        ],
+        "trap": [
+          "NOT for OLTP",
+          "Redshift ≠ Athena — Redshift loads data; Athena queries S3 in place"
+        ],
+        "when": "Data warehouse, complex analytics on structured data"
+      },
+      "aws-database-migration-service": {
+        "what": "Migrate databases to AWS with minimal downtime",
+        "key": [
+          "Source stays online during migration",
+          "Homogeneous: same engine (MySQL→MySQL)",
+          "Heterogeneous: different engine → use SCT first",
+          "CDC: continuous replication after initial load",
+          "Replication Instance in VPC"
+        ],
+        "trap": [
+          "Heterogeneous migration needs AWS SCT for schema conversion first",
+          "DMS=DB migration; Glue=analytics ETL"
+        ],
+        "when": "Migrate Oracle/SQL Server to Aurora/RDS with minimal downtime"
+      }
+    },
+    "developer-tools": {
+      "aws-codepipeline": {
+        "what": "CI/CD pipeline orchestration",
+        "key": [
+          "Stages: Source→Build→Test→Deploy",
+          "Artifacts passed via S3",
+          "Manual Approval action",
+          "Cross-region deployments",
+          "EventBridge triggers"
+        ],
+        "trap": [
+          "CodePipeline=orchestration; CodeBuild=build; CodeDeploy=deploy — glues them together"
+        ],
+        "when": "Automate release pipeline from commit to deployment"
+      },
+      "aws-codebuild": {
+        "what": "Fully managed build + test service",
+        "key": [
+          "buildspec.yml drives the build",
+          "Phases: install→pre_build→build→post_build",
+          "Pay per build minute",
+          "VPC support for private resources",
+          "Artifacts to S3"
+        ],
+        "trap": [
+          "No servers to manage — auto-scales",
+          "Use SSM/Secrets Manager for secrets in buildspec"
+        ],
+        "when": "Build, test, produce artifacts in CI pipeline"
+      },
+      "aws-codedeploy": {
+        "what": "Automate code deployments to EC2, Lambda, ECS",
+        "key": [
+          "appspec.yml defines lifecycle hooks",
+          "In-place: EC2/on-prem only",
+          "Blue/Green: zero-downtime",
+          "Auto-rollback on failure/alarm",
+          "Agent required on EC2/on-prem"
+        ],
+        "trap": [
+          "CodeDeploy does NOT provision infra — deploys to existing targets",
+          "Blue/Green on Lambda uses traffic shifting (canary/linear)"
+        ],
+        "when": "Automate deployments with rollback, zero-downtime blue/green"
+      },
+      "aws-x-ray": {
+        "what": "Distributed tracing for microservices",
+        "key": [
+          "Traces: Segments + Subsegments",
+          "Annotations: indexed, for filtering",
+          "Metadata: non-indexed context",
+          "Sampling: 5% + 1 req/s default",
+          "Service Map: visual topology"
+        ],
+        "trap": [
+          "X-Ray Daemon must run alongside app (sidecar on ECS)",
+          "Sampling reduces cost but may miss some traces"
+        ],
+        "when": "Debug latency, trace requests across Lambda/API GW/ECS/EC2"
+      },
+      "aws-cloud-development-kit": {
+        "what": "Define infra in TypeScript/Python/Java/Go — compiles to CloudFormation",
+        "key": [
+          "L1: raw CFN resources",
+          "L2: high-level with defaults",
+          "L3 (Patterns): opinionated multi-resource patterns",
+          "cdk synth → cdk diff → cdk deploy",
+          "Bootstrap needed first (S3+IAM in account)"
+        ],
+        "trap": [
+          "CDK generates CloudFormation — all CFN limits apply",
+          "Not a separate deployment system"
+        ],
+        "when": "Infrastructure as real code, reuse patterns as libraries"
+      },
+      "aws-cloudshell": {
+        "what": "Browser-based pre-authenticated CLI shell",
+        "key": [
+          "No credential setup needed",
+          "1GB persistent storage/region",
+          "Pre-installed: AWS CLI, Python, Node, git"
+        ],
+        "trap": [
+          "Uses console session permissions — not a separate IAM user"
+        ],
+        "when": "Quick CLI commands without local setup"
+      },
+      "aws-command-line-interface": {
+        "what": "Command-line tool to manage AWS services",
+        "key": [
+          "Uses Access Key ID + Secret Access Key",
+          "--dry-run: test permissions without executing",
+          "Named profiles for multiple accounts",
+          "EC2 metadata: 169.254.169.254 (no IAM needed)",
+          "MFA with CLI: sts get-session-token"
+        ],
+        "trap": [
+          "Never store access keys on EC2 — use IAM Instance Role",
+          "aws configure stores creds in ~/.aws/credentials"
+        ],
+        "when": "Automate AWS operations, scripting, local development"
+      },
+      "aws-codeartifact": {
+        "what": "Managed artifact/package repository",
+        "key": [
+          "Supports npm, PyPI, Maven, NuGet",
+          "Proxies public repos + caches internally",
+          "Integrates with CodeBuild/CodePipeline"
+        ],
+        "trap": [
+          "Prevents fetching from internet on every build — saves time and improves security"
+        ],
+        "when": "Centralize and secure package dependencies for builds"
+      },
+      "aws-codecommit": {
+        "what": "Managed private Git repositories",
+        "key": [
+          "Encrypted at rest (KMS) + in transit",
+          "IAM-based access control",
+          "Auth: HTTPS or SSH"
+        ],
+        "trap": [
+          "AWS announced end of new customer onboarding 2024 — exam may still include it"
+        ],
+        "when": "Private Git hosting fully within AWS (legacy/existing setups)"
+      }
+    },
+    "front-end-web-and-mobile": {
+      "aws-amplify": {
+        "what": "Full-stack toolset for web/mobile apps",
+        "key": [
+          "Hosting: CI/CD + CDN (like Vercel)",
+          "Auto-provisions: Cognito, AppSync, DynamoDB, Lambda, S3",
+          "Auth built-in via Cognito",
+          "Feature branch deployments",
+          "Supports SSR (Next.js), SPA, SSG"
+        ],
+        "trap": [
+          "Amplify=fastest full-stack serverless; not for fine-grained infra control"
+        ],
+        "when": "Quickly build + host full-stack serverless web/mobile apps"
+      },
+      "aws-appsync": {
+        "what": "Managed GraphQL API with real-time subscriptions",
+        "key": [
+          "Sources: DynamoDB, Lambda, RDS, OpenSearch, HTTP",
+          "Real-time via WebSocket subscriptions",
+          "Offline sync via Amplify DataStore",
+          "Auth: API Key / IAM / Cognito / OIDC / Lambda",
+          "Server-side caching"
+        ],
+        "trap": [
+          "AppSync=GraphQL+real-time; API Gateway=REST/HTTP/WebSocket",
+          "Subscriptions need WebSocket support on client"
+        ],
+        "when": "Real-time apps, aggregate multiple data sources in one query, offline-capable mobile"
+      }
+    },
+    "machine-learning": {
+      "amazon-comprehend": {
+        "what": "NLP — extract insights from text",
+        "key": [
+          "Detects: entities, sentiment, key phrases, language, PII",
+          "Comprehend Medical: PHI in clinical text",
+          "Serverless"
+        ],
+        "trap": [
+          "Comprehend=NLP/text analysis; Kendra=document search; Textract=document extraction"
+        ],
+        "when": "Analyze customer feedback, classify tickets, detect PII in text"
+      },
+      "amazon-kendra": {
+        "what": "Intelligent ML-powered enterprise search",
+        "key": [
+          "Returns precise answers not just links",
+          "Indexes: S3, SharePoint, Salesforce, OneDrive, DBs",
+          "Learns from user feedback",
+          "Question-answering capability"
+        ],
+        "trap": [
+          "Kendra=smart search; Comprehend=text analysis — don't confuse"
+        ],
+        "when": "Internal document search, knowledge base Q&A"
+      },
+      "amazon-lex": {
+        "what": "Build chatbots and voice interfaces (Alexa tech)",
+        "key": [
+          "ASR: speech→text",
+          "NLU: detect intent",
+          "Lambda for fulfillment",
+          "Deploy to web, Slack, Twilio, Facebook"
+        ],
+        "trap": [
+          "Lex=chatbot builder; Polly=TTS; Transcribe=STT"
+        ],
+        "when": "Customer service bots, voice ordering systems, FAQ automation"
+      },
+      "amazon-polly": {
+        "what": "Text-to-speech service",
+        "key": [
+          "Neural voices (NTTS) for natural sound",
+          "SSML: control pitch/rate/style",
+          "Lexicons: custom pronunciation",
+          "Speech Marks: word timing metadata"
+        ],
+        "trap": [
+          "Polly=TTS output; Transcribe=STT input; Lex=conversation"
+        ],
+        "when": "Audiobooks, accessibility, voice notifications, assistants"
+      },
+      "amazon-rekognition": {
+        "what": "ML image and video analysis",
+        "key": [
+          "Detects: objects, faces, text, celebs, unsafe content",
+          "Facial recognition + comparison",
+          "Video: stored (S3) or streaming (KVS)",
+          "Custom Labels: train for your objects"
+        ],
+        "trap": [
+          "Rekognition=image/video analysis; Textract=document text extraction"
+        ],
+        "when": "Identity verification, content moderation, media tagging"
+      },
+      "amazon-sagemaker-ai": {
+        "what": "End-to-end ML platform",
+        "key": [
+          "Studio: unified ML IDE",
+          "Autopilot: AutoML",
+          "Pipelines: CI/CD for ML",
+          "Feature Store: share ML features",
+          "Clarify: detect bias",
+          "Batch Transform: bulk inference"
+        ],
+        "trap": [
+          "SageMaker=full ML lifecycle; Rekognition/Comprehend/Polly=pre-built AI — no ML expertise needed for pre-built"
+        ],
+        "when": "Custom ML models: build, train, tune, deploy at scale"
+      },
+      "amazon-textract": {
+        "what": "Extract text + structured data from documents",
+        "key": [
+          "Beyond OCR: extracts forms (key-value) + tables",
+          "Supports PDF, JPEG, PNG, TIFF",
+          "Sync (small) + Async (large/multi-page) APIs"
+        ],
+        "trap": [
+          "Textract=document data extraction; Rekognition=image analysis"
+        ],
+        "when": "Automate invoice/form processing, extract data from scanned docs"
+      },
+      "amazon-transcribe": {
+        "what": "Speech-to-text (ASR)",
+        "key": [
+          "Speaker diarization",
+          "Custom vocabulary + language models",
+          "PII redaction",
+          "Transcribe Medical: clinical audio",
+          "Streaming: real-time WebSocket"
+        ],
+        "trap": [
+          "Transcribe=STT; Polly=TTS; Lex=conversation/chatbot"
+        ],
+        "when": "Meeting transcription, call analytics, subtitle generation"
+      },
+      "amazon-translate": {
+        "what": "Neural machine translation",
+        "key": [
+          "75+ languages",
+          "Real-time + batch",
+          "Custom Terminology: protect brand names/terms"
+        ],
+        "trap": [
+          "Translate=translation; Comprehend=language detection+analysis"
+        ],
+        "when": "Localize apps, translate user content, multilingual chatbots"
+      }
+    },
+    "management-and-governance": {
+      "amazon-cloudwatch": {
+        "what": "Monitoring, logs, and alerting for AWS",
+        "key": [
+          "Metrics: default 5min; detailed monitoring 1min",
+          "Custom Metrics: push RAM, disk via PutMetricData",
+          "Alarms → SNS/EC2/ASG actions",
+          "Logs: groups→streams; Insights for queries; Subscriptions for streaming",
+          "Container Insights: ECS/EKS",
+          "Contributor Insights: top-N analysis"
+        ],
+        "trap": [
+          "CloudWatch=what's happening now; CloudTrail=who did what; Config=what changed",
+          "EC2 RAM/disk NOT in default metrics — must use custom metrics"
+        ],
+        "when": "Monitor AWS resources, set alerts, centralize logs"
+      },
+      "aws-cloudformation": {
+        "what": "Infrastructure as Code (YAML/JSON templates)",
+        "key": [
+          "Stack: group of resources as one unit",
+          "StackSets: deploy across accounts/regions",
+          "Change Sets: preview before applying",
+          "Drift Detection: detect manual changes",
+          "DeletionPolicy: Retain/Snapshot/Delete",
+          "Nested Stacks: reuse template components"
+        ],
+        "trap": [
+          "CloudFormation is free — pay for resources only",
+          "CDK generates CloudFormation under the hood"
+        ],
+        "when": "Repeatable, version-controlled infrastructure deployment"
+      },
+      "aws-cloudtrail": {
+        "what": "API audit log — who did what and when",
+        "key": [
+          "Enabled by default (90d console history)",
+          "Trail → S3 (unlimited retention)",
+          "Event types: Management / Data / Insights",
+          "CloudTrail Insights: unusual API activity",
+          "Log integrity: SHA-256 signing",
+          "Organization Trail: all accounts in one"
+        ],
+        "trap": [
+          "CloudTrail=audit; CloudWatch=monitoring; Config=compliance",
+          "Disabled CloudTrail is a security finding"
+        ],
+        "when": "Audit API calls, compliance, forensics, detect unauthorized changes"
+      },
+      "aws-config": {
+        "what": "Track and evaluate resource configuration compliance",
+        "key": [
+          "Config Rules: AWS managed (150+) or custom Lambda",
+          "COMPLIANT / NON_COMPLIANT per resource",
+          "Remediation via SSM Automation",
+          "Conformance Packs: bundle rules + remediation",
+          "Stores history in S3"
+        ],
+        "trap": [
+          "Config=configuration compliance; CloudTrail=API audit",
+          "Config does NOT prevent changes — only evaluates after"
+        ],
+        "when": "Check if resources are always configured correctly, compliance auditing"
+      },
+      "aws-organizations": {
+        "what": "Centrally manage multiple AWS accounts",
+        "key": [
+          "Hierarchy: Root → OUs → Accounts",
+          "Consolidated billing + volume discounts",
+          "SCPs: restrict permissions on member accounts",
+          "SCPs cannot grant permissions — only restrict",
+          "Management account NOT restricted by SCPs",
+          "Control Tower for automated setup"
+        ],
+        "trap": [
+          "SCPs don't apply to management account",
+          "SCPs are AND with IAM — most restrictive wins"
+        ],
+        "when": "Multi-account strategy, billing consolidation, security guardrails at scale"
+      },
+      "aws-systems-manager": {
+        "what": "Operational management for EC2 + on-prem servers",
+        "key": [
+          "Session Manager: SSH/RDP with no port 22/key pairs",
+          "Run Command: execute scripts at scale",
+          "Patch Manager: automated OS patching",
+          "Parameter Store: config + secrets (plain/SecureString)",
+          "Automation: runbooks for ops tasks",
+          "SSM Agent: pre-installed on Amazon Linux 2"
+        ],
+        "trap": [
+          "Session Manager=preferred secure shell (no bastion needed)",
+          "Parameter Store=lightweight config/secrets; Secrets Manager=auto-rotation"
+        ],
+        "when": "Secure shell access, fleet management, config storage, patching"
+      },
+      "aws-trusted-advisor": {
+        "what": "Automated best-practice recommendations",
+        "key": [
+          "5 categories: Cost/Performance/Security/Fault Tolerance/Service Limits",
+          "Basic: 7 core checks free",
+          "Business/Enterprise: full checks + API",
+          "Weekly email summaries"
+        ],
+        "trap": [
+          "Trusted Advisor=proactive checks; Config=ongoing compliance; Security Hub=finding aggregation"
+        ],
+        "when": "Quick health check, find idle resources, security gaps, service limit warnings"
+      },
+      "aws-well-architected-tool": {
+        "what": "Review architecture against 6 Well-Architected pillars",
+        "key": [
+          "6 Pillars: Operational Excellence/Security/Reliability/Performance/Cost/Sustainability",
+          "Generates risk report with improvement recommendations",
+          "Custom Lenses for your own questions",
+          "Free tool"
+        ],
+        "trap": [
+          "Know all 6 pillars — exam scenarios often map to a specific pillar"
+        ],
+        "when": "Architecture review, identify risks before launch, compliance prep"
+      },
+      "aws-cloudshell": {
+        "what": "Browser shell with pre-auth AWS CLI",
+        "key": [
+          "No credential config needed",
+          "1GB persistent storage/region"
+        ],
+        "trap": [
+          "Uses console session IAM permissions"
+        ],
+        "when": "Quick CLI commands without local setup"
+      },
+      "aws-health-dashboard": {
+        "what": "Personalized AWS service health events for your account",
+        "key": [
+          "PHD: events impacting YOUR specific resources",
+          "Status.aws.amazon.com: global all-services status",
+          "EventBridge integration for auto-remediation"
+        ],
+        "trap": [
+          "PHD=your account's specific impact; public dashboard=overall AWS status"
+        ],
+        "when": "Get alerted about AWS maintenance/outages affecting your resources"
+      },
+      "aws-license-manager": {
+        "what": "Manage BYOL software licenses (Microsoft, Oracle, SAP)",
+        "key": [
+          "Set rules to prevent license violations",
+          "Cross-account via Organizations",
+          "Track usage vs entitlements"
+        ],
+        "trap": [
+          "License Manager=governance for vendor licenses on AWS/on-prem"
+        ],
+        "when": "Prevent license over-usage, compliance for expensive enterprise software"
+      }
+    },
+    "media-services": {
+      "amazon-kinesis-video-streams": {
+        "what": "Ingest, store and process video streams from devices",
+        "key": [
+          "Producers: cameras, drones, RADAR, smartphones",
+          "Consumers: Rekognition Video, SageMaker, custom ML",
+          "HLS/DASH playback",
+          "WebRTC: <500ms two-way video",
+          "Retention configurable"
+        ],
+        "trap": [
+          "KVS=video/media only; KDS=generic data records"
+        ],
+        "when": "Smart cameras, industrial video monitoring, video ML pipelines"
+      }
+    },
+    "migration-and-transfer": {
+      "aws-application-discovery-service": {
+        "what": "Discover on-prem servers before migration",
+        "key": [
+          "Agentless (VMware OVA): inventory + performance, no agents",
+          "Agent-based: detailed process + network dependency data",
+          "Data stored in Migration Hub",
+          "Dependency mapping for wave planning"
+        ],
+        "trap": [
+          "ADS=discovery BEFORE migration; MGN=actual migration tool"
+        ],
+        "when": "First step of migration: map what you have and how services connect"
+      },
+      "aws-application-migration-service": {
+        "what": "Lift-and-shift server migration to AWS (rehost)",
+        "key": [
+          "Block-level continuous replication",
+          "Source stays live during replication",
+          "Test cutover before real cutover",
+          "Supports: physical, VMware, Hyper-V, Azure, GCP → EC2",
+          "Minimal cutover window (minutes)"
+        ],
+        "trap": [
+          "MGN=lift-and-shift as-is; DMS=database migration/re-platform",
+          "Does NOT modernize or refactor"
+        ],
+        "when": "Migrate servers to EC2 with minimal downtime and no app changes"
+      },
+      "aws-datasync": {
+        "what": "Fast automated data transfer to/from AWS",
+        "key": [
+          "Sources: NFS, SMB, HDFS, S3-compatible, AWS-to-AWS",
+          "Destinations: S3, EFS, FSx variants",
+          "Agent VM for on-prem transfers",
+          "Up to 10 Gbps/agent",
+          "Preserves metadata + permissions",
+          "TLS + checksums"
+        ],
+        "trap": [
+          "DataSync=bulk migration/periodic sync; Storage Gateway=ongoing hybrid access",
+          "DataSync=online (network); Snowball=offline (physical)"
+        ],
+        "when": "Migrate NFS/SMB to EFS/S3, scheduled nightly sync, AWS-to-AWS transfer"
+      },
+      "aws-transfer-family": {
+        "what": "Managed SFTP/FTP/FTPS/AS2 endpoints backed by S3/EFS",
+        "key": [
+          "Protocols: SFTP, FTPS, FTP, AS2",
+          "Storage: S3 or EFS",
+          "Auth: service-managed, Lambda, AD, Okta",
+          "Managed workflows: post-upload Lambda trigger",
+          "Static IPs via Elastic IP"
+        ],
+        "trap": [
+          "Transfer Family=ongoing file exchange protocol gateway; DataSync=bulk data transfer",
+          "AS2=EDI/B2B transactions (healthcare, finance)"
+        ],
+        "when": "Partners/clients use SFTP today and you want to move files to S3 without changing their tooling"
+      }
+    },
+    "networking-and-content-delivery": {
+      "amazon-api-gateway": {
+        "what": "Managed API front door (REST, HTTP, WebSocket)",
+        "key": [
+          "Auth: IAM / Lambda Authorizer / Cognito",
+          "Throttle: 10K RPS default, 5K burst",
+          "Cache: 0-3600s TTL",
+          "VPC Link: reach private ALB/NLB",
+          "Canary deployments",
+          "29s hard integration timeout"
+        ],
+        "trap": [
+          "REST API≠HTTP API — REST has caching/WAF/usage plans; HTTP is cheaper/simpler",
+          "29s timeout for sync Lambda calls",
+          "CORS must be enabled on API GW for browser calls"
+        ],
+        "when": "Expose Lambda/services as HTTP APIs, manage traffic, auth, throttling"
+      },
+      "amazon-cloudfront": {
+        "what": "CDN — cache content at 400+ global edge locations",
+        "key": [
+          "OAC: restrict S3 to CloudFront only (replaces OAI)",
+          "Signed URLs/Cookies: restrict premium content",
+          "CloudFront Functions: JS <1ms at edge",
+          "Lambda@Edge: Node/Python up to 30s at edge",
+          "Geo Restriction: allowlist/blocklist countries",
+          "Shield Standard: always-on DDoS"
+        ],
+        "trap": [
+          "CloudFront cert MUST be in us-east-1",
+          "CloudFront≠Global Accelerator — CF caches; GA routes without caching",
+          "EC2 origin needs public IP or ALB in front"
+        ],
+        "when": "Global static/dynamic content delivery, S3 website CDN, DDoS protection"
+      },
+      "amazon-route-53": {
+        "what": "Scalable DNS + domain registration + health checks",
+        "key": [
+          "Routing: Simple/Weighted/Latency/Failover/Geolocation/Geoproximity/Multi-value/IP-based",
+          "Alias: free, works at zone apex, points to AWS resources",
+          "Health Checks: endpoint/calculated/CloudWatch alarm",
+          "Private Hosted Zones: DNS inside VPC"
+        ],
+        "trap": [
+          "CNAME can't be at zone apex — use Alias",
+          "Geolocation≠Latency: geo=where you are; latency=fastest response",
+          "Multi-value≠load balancer — just DNS with health checks"
+        ],
+        "when": "DNS routing, failover, weighted traffic splitting, health-checked DNS"
+      },
+      "elastic-load-balancing": {
+        "what": "Distribute traffic across targets in multiple AZs",
+        "key": [
+          "ALB (L7): path/host/header routing, Lambda targets, Cognito auth, dynamic port mapping",
+          "NLB (L4): millions RPS, static IP, preserves client IP, ultra-low latency",
+          "GWLB (L3): route to firewall appliances, GENEVE port 6081",
+          "Cross-zone LB: default on ALB (free), off on NLB (charged)",
+          "Deregistration Delay: 300s default"
+        ],
+        "trap": [
+          "ALB doesn't preserve client IP — use X-Forwarded-For header",
+          "NLB does preserve client IP — SG must allow actual client IPs",
+          "ALB can't handle pure TCP/UDP — use NLB"
+        ],
+        "when": "ALB=web/microservices HTTP; NLB=high-perf TCP/UDP/gaming; GWLB=security appliances"
+      },
+      "aws-direct-connect": {
+        "what": "Dedicated private network connection to AWS",
+        "key": [
+          "Speeds: 1/10/100 Gbps (dedicated) or 50Mbps-500Mbps (hosted/partner)",
+          "NOT encrypted by default",
+          "VIF types: Private (VPC) / Public (AWS services) / Transit (TGW)",
+          "Direct Connect Gateway: access VPCs in multiple regions",
+          "Lead time: 1+ month"
+        ],
+        "trap": [
+          "DX is NOT encrypted — use VPN over DX for encryption",
+          "DX takes weeks — use VPN for quick connectivity",
+          "DX Gateway≠Transit Gateway"
+        ],
+        "when": "Consistent low-latency/high-bandwidth to AWS, hybrid cloud, large data transfer"
+      },
+      "aws-global-accelerator": {
+        "what": "Route traffic over AWS backbone for global performance",
+        "key": [
+          "2 static Anycast IPs as global entry points",
+          "Endpoints: ALB, NLB, EC2, EIP in any region",
+          "Instant failover ~30s (no DNS TTL wait)",
+          "Traffic Dials: % per region",
+          "No caching"
+        ],
+        "trap": [
+          "GA≠CloudFront: GA routes TCP/UDP, no caching; CF caches HTTP content",
+          "Use GA for non-HTTP or when you need static IPs + instant failover"
+        ],
+        "when": "Global TCP/UDP apps, gaming, IoT, instant failover, static IP requirement"
+      },
+      "aws-transit-gateway": {
+        "what": "Hub-and-spoke network connector for VPCs + on-prem",
+        "key": [
+          "Transitive routing (unlike VPC Peering)",
+          "Max 5,000 VPC attachments",
+          "ECMP: aggregate VPN bandwidth across tunnels",
+          "Route Tables: isolate environments (dev/prod)",
+          "RAM for cross-account sharing",
+          "TGW Peering for cross-region"
+        ],
+        "trap": [
+          "VPC Peering is NOT transitive — use TGW for transitive routing",
+          "TGW costs per attachment + per GB — VPC Peering has no per-hour cost"
+        ],
+        "when": "Connect many VPCs, replace complex peering mesh, on-prem + multi-VPC hub"
+      }
+    },
+    "security-identity-and-compliance": {
+      "amazon-cognito": {
+        "what": "Identity for app users (not AWS users)",
+        "key": [
+          "User Pools: sign-up/sign-in → JWT tokens",
+          "Identity Pools: exchange token → temp AWS creds via STS",
+          "Social: Google, Facebook, Apple, Amazon",
+          "Enterprise: SAML 2.0 (AD, Okta)",
+          "Lambda triggers for custom flows"
+        ],
+        "trap": [
+          "User Pools=authentication only (JWTs)",
+          "Identity Pools=AWS authorization (temp creds)",
+          "Cognito=app users; IAM=AWS users"
+        ],
+        "when": "App login, social sign-in, give mobile users access to AWS resources"
+      },
+      "amazon-detective": {
+        "what": "Investigate root cause of security incidents",
+        "key": [
+          "Uses GuardDuty + CloudTrail + VPC Flow Logs + EKS logs",
+          "ML + graph analysis",
+          "Fully managed, no setup"
+        ],
+        "trap": [
+          "GuardDuty=alarm; Security Hub=dashboard; Detective=forensics/investigation"
+        ],
+        "when": "Deep-dive investigation after GuardDuty finding"
+      },
+      "amazon-guardduty": {
+        "what": "ML-powered threat detection",
+        "key": [
+          "Analyzes: CloudTrail, VPC Flow Logs, DNS, EKS, RDS, S3 events",
+          "No agents needed",
+          "EventBridge → Lambda for auto-remediation",
+          "Malware Protection: scan EBS on compromised EC2",
+          "Multi-account via Organizations"
+        ],
+        "trap": [
+          "GuardDuty DETECTS but does NOT block — use Lambda+SG/NACL/WAF to block",
+          "Disabling GuardDuty deletes all findings — use suppression rules instead"
+        ],
+        "when": "Continuous threat detection across all accounts"
+      },
+      "amazon-inspector": {
+        "what": "Automated vulnerability scanning",
+        "key": [
+          "Targets: EC2 (needs SSM Agent), ECR images, Lambda",
+          "Finds: CVEs + unintended network exposure",
+          "Continuous scanning",
+          "Findings → Security Hub + EventBridge"
+        ],
+        "trap": [
+          "Inspector=vulnerability scanning (what could be exploited)",
+          "GuardDuty=threat detection (what is happening)",
+          "Macie=sensitive data in S3"
+        ],
+        "when": "Find CVEs on EC2/containers/Lambda, network reachability checks"
+      },
+      "amazon-macie": {
+        "what": "ML-powered sensitive data discovery in S3",
+        "key": [
+          "Finds: PII, financial data, credentials, PHI",
+          "Managed identifiers (100+ types) + custom regex",
+          "Multi-account via Organizations",
+          "Findings → Security Hub + EventBridge"
+        ],
+        "trap": [
+          "Macie=S3 only — not EBS, RDS, EFS, DynamoDB"
+        ],
+        "when": "Detect PII/sensitive data in S3, data privacy compliance"
+      },
+      "amazon-verified-permissions": {
+        "what": "Fine-grained authorization for your applications (Cedar)",
+        "key": [
+          "Externalize authz logic from app code",
+          "Works with Cognito for auth context",
+          "IsAuthorized API: allow/deny per request"
+        ],
+        "trap": [
+          "Verified Permissions=your app's users; IAM=AWS resource access"
+        ],
+        "when": "App-level RBAC/ABAC, policy changes without code deploys"
+      },
+      "aws-artifact": {
+        "what": "Download AWS compliance reports (SOC, PCI, ISO)",
+        "key": [
+          "Reports: SOC1/2/3, PCI DSS, ISO, FedRAMP, HIPAA BAA",
+          "Agreements: DPAs, BAAs, NDAs",
+          "Free service"
+        ],
+        "trap": [
+          "Artifact=AWS's own compliance docs; Audit Manager=YOUR compliance evidence"
+        ],
+        "when": "Auditors need AWS compliance certifications, sign HIPAA BAA"
+      },
+      "aws-audit-manager": {
+        "what": "Automate evidence collection for compliance audits",
+        "key": [
+          "Pre-built frameworks: PCI, GDPR, HIPAA, SOC2, CIS",
+          "Auto-collects evidence from CloudTrail, Config, Security Hub",
+          "Custom frameworks + controls",
+          "Audit-ready reports"
+        ],
+        "trap": [
+          "Audit Manager=YOUR evidence; Artifact=AWS's certifications"
+        ],
+        "when": "Preparing for SOC2/PCI/HIPAA audit, continuous compliance monitoring"
+      },
+      "aws-certificate-manager": {
+        "what": "Free managed SSL/TLS certificates for AWS services",
+        "key": [
+          "Free public certs, auto-renew",
+          "Works with: ALB, CloudFront, API GW, Beanstalk",
+          "DNS or Email validation",
+          "Private CA: ACM Private CA (charged)",
+          "Cannot export private key"
+        ],
+        "trap": [
+          "CloudFront certs MUST be in us-east-1",
+          "Does NOT work directly on EC2 — needs ALB/NLB in front"
+        ],
+        "when": "HTTPS on ALB, CloudFront, API Gateway — no manual cert management"
+      },
+      "aws-directory-service": {
+        "what": "Managed Active Directory in AWS",
+        "key": [
+          "Managed Microsoft AD: full AD, MFA, trust with on-prem",
+          "AD Connector: proxy to on-prem AD (no AWS storage)",
+          "Simple AD: Samba4, basic, cheap, no trusts/MFA"
+        ],
+        "trap": [
+          "AD Connector fails if VPN/DX to on-prem goes down",
+          "Simple AD has no MFA or trust relationships"
+        ],
+        "when": "EC2 domain join, WorkSpaces, apps needing Windows AD authentication"
+      },
+      "aws-identity-and-access-management": {
+        "what": "Access control for AWS resources",
+        "key": [
+          "Explicit Deny ALWAYS wins",
+          "Policy types: Identity / Resource-based / Permission Boundary / SCP / Session",
+          "Permission Boundary: caps max permissions (doesn't grant)",
+          "Cross-account: AssumeRole via STS",
+          "Access Analyzer: finds external sharing",
+          "Never use root for daily tasks"
+        ],
+        "trap": [
+          "SCPs don't apply to management account",
+          "Permission Boundaries don't grant — they limit max",
+          "Groups cannot assume roles — users and services can"
+        ],
+        "when": "Everything — foundational AWS access control"
+      },
+      "aws-iam-identity-center": {
+        "what": "SSO for all AWS accounts + cloud apps",
+        "key": [
+          "One login → all accounts",
+          "Permission Sets → IAM roles in each account",
+          "Identity sources: built-in, AD, Okta, Azure AD (SAML)",
+          "SCIM: auto user provisioning",
+          "ABAC with user attributes",
+          "Free with Organizations"
+        ],
+        "trap": [
+          "Identity Center=workforce AWS access; Cognito=app end-users"
+        ],
+        "when": "Multi-account SSO, centralize user access, federate corporate IdP"
+      },
+      "aws-key-management-service": {
+        "what": "Managed encryption key service",
+        "key": [
+          "CMK types: AWS Owned (free) / AWS Managed ($0/key, auto-rotate) / Customer Managed ($1/mo)",
+          "Envelope Encryption: for data >4KB — data key encrypts data, KMS encrypts data key",
+          "Key Policy required on every key (must allow root)",
+          "Multi-Region Keys: same material in multiple regions",
+          "All usage logged in CloudTrail"
+        ],
+        "trap": [
+          "Key deletion=irreversible after 7-30d waiting period",
+          "KMS=multi-tenant; CloudHSM=dedicated single-tenant hardware",
+          "Key Policies must explicitly allow root — unlike IAM"
+        ],
+        "when": "Encrypt EBS/S3/RDS/etc., manage key rotation, audit encryption usage"
+      },
+      "aws-network-firewall": {
+        "what": "Managed stateful L3-L7 VPC firewall + IDS/IPS",
+        "key": [
+          "Stateless: 5-tuple packet filtering",
+          "Stateful: Suricata-compatible DPI rules",
+          "Domain lists: FQDN-based allow/block",
+          "Deployed in dedicated subnet",
+          "Centralize via Firewall Manager"
+        ],
+        "trap": [
+          "Network Firewall=VPC-level any traffic; WAF=HTTP only for ALB/CF/API GW",
+          "Requires route table changes to redirect traffic through firewall endpoints"
+        ],
+        "when": "Block outbound to malicious domains, IDS/IPS for VPC traffic, centralized egress inspection"
+      },
+      "aws-resource-access-manager": {
+        "what": "Share AWS resources across accounts without duplication",
+        "key": [
+          "Share: VPC subnets, TGW, Route 53 rules, License configs, Aurora, ACM Private CA",
+          "VPC Subnet sharing: multiple accounts deploy into same VPC",
+          "No VPC peering needed for shared subnets"
+        ],
+        "trap": [
+          "RAM=share resources; not for sharing data (use S3 bucket policies for that)"
+        ],
+        "when": "Multiple accounts sharing same VPC, TGW, or Route 53 rules"
+      },
+      "aws-secrets-manager": {
+        "what": "Store and auto-rotate secrets (DB creds, API keys)",
+        "key": [
+          "Native rotation: RDS, Aurora, Redshift, DocumentDB",
+          "Lambda-based rotation for anything else",
+          "Cross-region replication for DR",
+          "KMS encrypted",
+          "$0.40/secret/month"
+        ],
+        "trap": [
+          "'Automatic rotation of DB credentials' → always Secrets Manager",
+          "SSM Parameter Store=cheaper, no auto-rotation",
+          "Secrets Manager > SSM when rotation is needed"
+        ],
+        "when": "Database passwords, API keys — especially when auto-rotation is required"
+      },
+      "aws-security-hub": {
+        "what": "Single pane of glass for security findings",
+        "key": [
+          "Aggregates: GuardDuty, Inspector, Macie, Config, IAM Analyzer, Firewall Manager",
+          "Evaluates against CIS / FSBP / PCI standards",
+          "EventBridge for auto-remediation",
+          "Multi-account via Organizations"
+        ],
+        "trap": [
+          "Security Hub=aggregation dashboard; GuardDuty=detection; Detective=investigation",
+          "Requires Config enabled for many checks"
+        ],
+        "when": "Centralize all security findings, compliance scoring, automated response"
+      },
+      "aws-shield": {
+        "what": "DDoS protection",
+        "key": [
+          "Standard: free, always-on, L3/L4 protection",
+          "Advanced: $3K/month, DRT 24/7, financial protection, L7 with WAF",
+          "Advanced covers: EC2, ELB, CloudFront, Route53, Global Accelerator"
+        ],
+        "trap": [
+          "Shield Standard=free automatic; Advanced=paid enterprise-grade",
+          "Shield Standard does NOT protect L7 — add WAF for that"
+        ],
+        "when": "Standard=everyone (free); Advanced=critical apps needing DRT + cost protection"
+      },
+      "aws-waf": {
+        "what": "Web Application Firewall for HTTP/S traffic",
+        "key": [
+          "Deploy on: ALB, CloudFront, API GW, AppSync, Cognito",
+          "Rules: IP sets, SQLi, XSS, geo, rate-based, regex, managed groups",
+          "Rate-based: auto-block IPs exceeding threshold",
+          "Firewall Manager: enforce WAF across all accounts"
+        ],
+        "trap": [
+          "WAF=L7 HTTP protection; Shield=volumetric DDoS; Network Firewall=any VPC traffic DPI",
+          "WAF on CloudFront=global; WAF on ALB=regional — separate Web ACLs"
+        ],
+        "when": "Block SQLi/XSS, rate limit, geo-block, OWASP Top 10 protection"
+      }
+    },
+    "serverless": {
+      "amazon-api-gateway": {
+        "what": "Managed API gateway (REST, HTTP, WebSocket)",
+        "key": [
+          "REST: full features (cache, WAF, usage plans)",
+          "HTTP: cheaper, simpler, JWT native auth",
+          "WebSocket: real-time bidirectional",
+          "Private: VPC-only via Interface Endpoint",
+          "VPC Link: connect to private ALB/NLB",
+          "29s hard timeout"
+        ],
+        "trap": [
+          "REST≠HTTP API feature set",
+          "29s Lambda sync timeout",
+          "CORS must be enabled on GW not just Lambda"
+        ],
+        "when": "Expose Lambda as HTTPS API, manage throttling/auth/caching"
+      },
+      "aws-appsync": {
+        "what": "Managed GraphQL API",
+        "key": [
+          "Real-time subscriptions via WebSocket",
+          "Multi-source resolvers in one query",
+          "Offline sync via Amplify DataStore",
+          "Auth: API Key/IAM/Cognito/OIDC/Lambda"
+        ],
+        "trap": [
+          "AppSync=GraphQL+real-time; API GW=REST/HTTP"
+        ],
+        "when": "Real-time apps, mobile offline sync, aggregate multiple data sources"
+      },
+      "aws-lambda": {
+        "what": "Serverless functions — run code without servers",
+        "key": [
+          "Max 15min, 10GB memory, 10GB /tmp",
+          "1000 concurrent default/region",
+          "Provisioned Concurrency=no cold start",
+          "SnapStart=Java cold start -90%",
+          "VPC=needs NAT for internet",
+          "Layers=share code"
+        ],
+        "trap": [
+          "VPC Lambda loses internet — add NAT GW",
+          "SQS visibility timeout=6x Lambda timeout",
+          "API GW 29s sync limit"
+        ],
+        "when": "Event-driven <15min tasks, APIs, file processing, triggers"
+      },
+      "aws-step-functions": {
+        "what": "Visual serverless workflow orchestration",
+        "key": [
+          "Standard: exactly-once, max 1yr",
+          "Express: at-least-once, max 5min, high-volume",
+          "waitForTaskToken: human approval pattern",
+          "Map state: parallel iteration",
+          "Retry + Catch per state"
+        ],
+        "trap": [
+          "Don't chain Lambdas calling each other — use Step Functions",
+          "Express=5min max; Standard=long-running"
+        ],
+        "when": "Multi-step workflows, orchestrate services, human approvals, complex error handling"
+      }
+    },
+    "storage": {
+      "amazon-elastic-block-store": {
+        "what": "Persistent block storage for EC2 (single AZ)",
+        "key": [
+          "gp3: 3K IOPS + 125MB/s baseline, max 16K IOPS — preferred over gp2",
+          "io2 Block Express: max 256K IOPS",
+          "st1/sc1 (HDD): cannot be boot volume",
+          "Multi-Attach: io1/io2 only, same AZ, up to 16 instances",
+          "Snapshots: incremental, cross-region copy"
+        ],
+        "trap": [
+          "EBS is AZ-locked — snapshot to move to another AZ/region",
+          "st1/sc1 cannot be boot volumes",
+          "Unencrypted→encrypted: snapshot copy with encryption"
+        ],
+        "when": "EC2 root/data volumes, databases, single-instance persistent storage"
+      },
+      "amazon-elastic-file-system": {
+        "what": "Managed shared NFS for Linux (multi-AZ)",
+        "key": [
+          "Linux/POSIX only",
+          "Elastic: auto-grows/shrinks",
+          "Performance modes: General Purpose (default) / Max I/O (set at creation, can't change)",
+          "Throughput: Bursting/Provisioned/Elastic (recommended)",
+          "Lifecycle: Standard→IA→Archive",
+          "Access Points: per-app POSIX identity"
+        ],
+        "trap": [
+          "EFS Linux only — FSx for Windows for SMB",
+          "Performance mode can't change after creation",
+          "Standard-IA has retrieval fee — if accessed often, Standard is cheaper"
+        ],
+        "when": "Shared file storage across multiple EC2/ECS/EKS, content management, home dirs"
+      },
+      "amazon-s3": {
+        "what": "Infinitely scalable object storage",
+        "key": [
+          "Max object 5TB; multipart required >5GB",
+          "Classes: Standard/Intelligent-Tiering/Standard-IA/One Zone-IA/Glacier Instant/Flexible/Deep Archive",
+          "OAC: restrict bucket to CloudFront only",
+          "Object Lock WORM: Governance or Compliance mode",
+          "SSE: SSE-S3(default)/SSE-KMS/SSE-C/client-side",
+          "S3 Event → SNS/SQS/Lambda/EventBridge"
+        ],
+        "trap": [
+          "CRR+SRR need versioning on BOTH buckets",
+          "Standard-IA/One Zone-IA: min 30d + 128KB charge",
+          "SSE-KMS has KMS API rate limits at high throughput"
+        ],
+        "when": "Any object storage: backups, data lake, static web hosting, archives"
+      },
+      "amazon-s3-glacier": {
+        "what": "Ultra-cheap archival storage",
+        "key": [
+          "Instant: ms retrieval, min 90d",
+          "Flexible: Expedited(1-5min)/Standard(3-5h)/Bulk(5-12h), min 90d",
+          "Deep Archive: Standard(12h)/Bulk(48h), min 180d, cheapest",
+          "Vault Lock: WORM compliance, immutable once locked"
+        ],
+        "trap": [
+          "Flexible≠instant — plan retrieval time",
+          "Min storage duration charged even if deleted early",
+          "Vault Lock≠Object Lock — Vault Lock for Glacier direct API"
+        ],
+        "when": "7-10 year compliance archives, infrequently accessed data, lowest cost storage"
+      },
+      "aws-backup": {
+        "what": "Centralized backup across AWS services",
+        "key": [
+          "Covers: EC2, EBS, RDS, Aurora, DynamoDB, EFS, FSx, S3, Storage Gateway",
+          "Cross-region + cross-account copies",
+          "Backup Vault Lock: WORM, even root can't delete",
+          "Tag-based backup policies"
+        ],
+        "trap": [
+          "Backup Vault Lock has 72h cool-off before becoming immutable"
+        ],
+        "when": "Single backup strategy across all services, compliance, cross-account DR"
+      },
+      "aws-storage-gateway": {
+        "what": "Hybrid cloud: connect on-prem to AWS storage",
+        "key": [
+          "S3 File Gateway: NFS/SMB → S3 objects + local cache",
+          "FSx File Gateway: SMB → FSx for Windows + local cache",
+          "Volume Cached: primary in S3, hot data cached on-prem (iSCSI)",
+          "Volume Stored: primary on-prem, async backup to S3 (iSCSI)",
+          "Tape Gateway: virtual tape library → S3/Glacier"
+        ],
+        "trap": [
+          "Storage Gateway=ongoing hybrid; DataSync=bulk migration",
+          "File Gateway=file protocol; Volume Gateway=block (iSCSI)"
+        ],
+        "when": "Extend on-prem storage to cloud, replace tape, hybrid file shares"
+      }
+    },
+    "vpc-fundamentals": {
+      "vpc-fundamentals": {
+        "what": "Isolated virtual network in AWS",
+        "key": [
+          "Region-scoped, spans all AZs",
+          "CIDR: /16 to /28; 5 reserved IPs per subnet",
+          "Public subnet: route to IGW + public IP",
+          "Private subnet: no IGW route",
+          "Max 5 VPCs/region (soft limit)"
+        ],
+        "trap": [
+          "5 IPs reserved per subnet (not 4)",
+          "Cannot change VPC CIDR after creation — add secondary CIDRs"
+        ],
+        "when": "Foundation of every AWS architecture"
+      },
+      "internet-gateway-and-nat": {
+        "what": "Internet access for VPC resources",
+        "key": [
+          "IGW: attach to VPC, add route 0.0.0.0/0 → IGW in public subnet",
+          "NAT GW: in PUBLIC subnet, private subnet routes 0.0.0.0/0 → NAT GW",
+          "NAT GW: 5-100 Gbps, charged per hour + GB",
+          "One NAT GW per AZ for HA"
+        ],
+        "trap": [
+          "NAT GW is in PUBLIC subnet not private",
+          "Single NAT GW=single AZ failure point",
+          "NAT GW=outbound only, not inbound"
+        ],
+        "when": "IGW=public internet access; NAT GW=private instances need outbound internet (updates, APIs)"
+      },
+      "security-groups-and-nacls": {
+        "what": "Network security layers in VPC",
+        "key": [
+          "SG: instance-level, stateful, allow-only, evaluates all rules",
+          "NACL: subnet-level, stateless, allow+deny, rule number order (lowest first)",
+          "Default NACL: allows all",
+          "Custom NACL: denies all by default",
+          "Ephemeral ports 1024-65535 needed in NACL outbound"
+        ],
+        "trap": [
+          "SGs stateful=return traffic auto-allowed",
+          "NACLs stateless=must allow both inbound AND outbound explicitly",
+          "SGs can't deny — use NACL to block specific IPs"
+        ],
+        "when": "Use both for defense-in-depth; NACL for IP blocking; SG for fine-grained instance access"
+      },
+      "vpc-endpoints": {
+        "what": "Private access to AWS services without internet",
+        "key": [
+          "Gateway: S3 + DynamoDB ONLY, FREE, via route table",
+          "Interface (PrivateLink): all other services, charged per hour + GB, creates ENI",
+          "Interface can be accessed from on-prem; Gateway cannot"
+        ],
+        "trap": [
+          "Gateway=free S3/DynamoDB only; Interface=everything else (charged)",
+          "Gateway Endpoints can't be accessed from on-prem — use Interface for that"
+        ],
+        "when": "Private EC2 needs S3 without NAT (Gateway); SSM/Secrets Manager without internet (Interface)"
+      },
+      "vpc-peering": {
+        "what": "Direct private connection between two VPCs",
+        "key": [
+          "Same or cross-region, same or cross-account",
+          "NOT transitive — A↔B and B↔C ≠ A↔C",
+          "No overlapping CIDRs",
+          "Update route tables on BOTH sides"
+        ],
+        "trap": [
+          "Peering is not transitive — use TGW for transitive routing",
+          "Overlapping CIDRs block peering"
+        ],
+        "when": "Connect 2-5 VPCs; use Transit Gateway for larger meshes"
+      },
+      "vpc-flow-logs": {
+        "what": "Capture network traffic metadata for VPC/subnet/ENI",
+        "key": [
+          "Metadata only (IPs, ports, bytes, ACCEPT/REJECT) — not packet content",
+          "Publish to: CloudWatch Logs, S3, Kinesis Firehose",
+          "Query with Athena (S3) or CloudWatch Logs Insights"
+        ],
+        "trap": [
+          "Flow Logs=metadata; Traffic Mirroring=actual packet content",
+          "Does NOT capture: Route53 DNS queries, DHCP, instance metadata (169.254.x.x)"
+        ],
+        "when": "Troubleshoot connectivity, audit traffic, detect port scans, identify rejected connections"
+      },
+      "bastion-hosts-and-site-to-site-vpn": {
+        "what": "Secure access to private resources + on-prem connectivity",
+        "key": [
+          "Bastion: public EC2 jump server (replace with SSM Session Manager)",
+          "Site-to-Site VPN: IPSec tunnels, VGW + CGW, 1.25 Gbps/tunnel",
+          "VPN CloudHub: multiple branches via single VGW",
+          "Accelerated VPN: over AWS Global Accelerator backbone"
+        ],
+        "trap": [
+          "VPN is encrypted; Direct Connect is NOT encrypted",
+          "VPN goes over public internet — latency varies; DX is dedicated private",
+          "Session Manager preferred over bastion — no port 22, no key pairs"
+        ],
+        "when": "VPN=quick encrypted on-prem connectivity; Bastion=legacy SSH jump (prefer SSM)"
+      },
+      "vpc-advanced-features": {
+        "what": "IPv6, DNS, Traffic Mirroring in VPC",
+        "key": [
+          "Egress-Only IGW: IPv6 outbound only (like NAT GW but for IPv6, free)",
+          "Traffic Mirroring: copy packets to inspection tool (actual content)",
+          "IPv6: always public, no private IPv6 ranges",
+          "Resolver Inbound: on-prem DNS resolves AWS private zones",
+          "Resolver Outbound: VPC DNS forwards to on-prem"
+        ],
+        "trap": [
+          "IPv6 is always public — use Egress-Only IGW for private outbound IPv6",
+          "Egress-Only IGW=IPv6 only; NAT GW=IPv4 only"
+        ],
+        "when": "IPv6 dual-stack, packet inspection/forensics, hybrid DNS resolution"
+      }
+    },
+    "architecture-patterns": {
+      "well-architected-framework": {
+        "what": "6 pillars of AWS best-practice architecture",
+        "key": [
+          "Operational Excellence: IaC, small changes, learn from failure",
+          "Security: least privilege, traceability, defense in depth",
+          "Reliability: auto-recover, horizontal scale, test failure",
+          "Performance Efficiency: right tool, serverless, go global",
+          "Cost Optimization: consumption model, right-size, commitments",
+          "Sustainability: minimize waste, use managed services"
+        ],
+        "trap": [
+          "Exam scenarios often map to a specific pillar — identify which one"
+        ],
+        "when": "Use as lens for every architecture decision"
+      },
+      "high-availability-patterns": {
+        "what": "Design for fault tolerance and resilience",
+        "key": [
+          "Multi-AZ: ASG + ALB + RDS Multi-AZ + one NAT GW per AZ",
+          "Multi-Region: Aurora Global / DynamoDB Global Tables / S3 CRR",
+          "Decoupling: SQS/SNS/EventBridge between services",
+          "ASG policies: Target Tracking / Step / Scheduled / Predictive",
+          "Scale-out (horizontal) over scale-up (vertical) for HA"
+        ],
+        "trap": [
+          "Multi-AZ=HA within region; Multi-Region=DR across regions",
+          "Scale-up has a ceiling; scale-out is theoretically unlimited"
+        ],
+        "when": "Any production workload requiring resilience"
+      },
+      "serverless-architecture-patterns": {
+        "what": "Common serverless design patterns",
+        "key": [
+          "Web API: CloudFront→API GW→Lambda→DynamoDB",
+          "Event-driven: S3→EventBridge→Lambda",
+          "Fan-out: SNS→multiple SQS→Lambda workers",
+          "Scheduled: EventBridge Scheduler→Lambda",
+          "Large file upload: S3 Presigned URL (bypass Lambda size limits)",
+          "Long tasks: Lambda triggers Fargate/Batch"
+        ],
+        "trap": [
+          "Lambda max 15min — offload long tasks to Fargate/Batch",
+          "Large payloads: upload direct to S3 via presigned URL, not through Lambda"
+        ],
+        "when": "Build cost-efficient, auto-scaling, zero-server-management applications"
+      },
+      "caching-patterns": {
+        "what": "Cache strategies to reduce latency and cost",
+        "key": [
+          "Lazy Loading: cache-aside, cache miss=3 trips, stale possible",
+          "Write-Through: always fresh, may cache unused data",
+          "CDN: CloudFront for edge caching",
+          "App cache: ElastiCache Redis/Memcached",
+          "DynamoDB: DAX for microsecond reads",
+          "TTL: balance freshness vs performance"
+        ],
+        "trap": [
+          "DAX=DynamoDB only",
+          "ElastiCache can serve stale data — set appropriate TTL"
+        ],
+        "when": "High read traffic, repeated queries, global low-latency requirements"
+      },
+      "cross-account-and-multi-account-patterns": {
+        "what": "Manage access and resources across AWS accounts",
+        "key": [
+          "Cross-account role: Account A assumes role in Account B via STS",
+          "Resource-based policy: grant access directly without AssumeRole (S3, KMS, Lambda, SQS)",
+          "RAM: share VPC subnets, TGW, Route 53 rules",
+          "Control Tower: automated landing zone with guardrails",
+          "SCPs: prevent actions at account level"
+        ],
+        "trap": [
+          "SCPs don't apply to management account",
+          "Cross-account role needs trust on BOTH sides (role trusts account + user needs AssumeRole permission)"
+        ],
+        "when": "Enterprise multi-account setup, shared networking, cross-team access control"
+      }
+    },
+    "disaster-recovery": {
+      "disaster-recovery-concepts": {
+        "what": "RPO/RTO and DR strategy selection",
+        "key": [
+          "RPO: max acceptable data loss (time)",
+          "RTO: max acceptable downtime",
+          "Lower RPO/RTO = higher cost",
+          "4 strategies: Backup&Restore < Pilot Light < Warm Standby < Multi-Site Active-Active"
+        ],
+        "trap": [
+          "RPO=data loss tolerance; RTO=downtime tolerance — don't mix them up"
+        ],
+        "when": "Every architecture with HA/DR requirements — match strategy to RPO/RTO budget"
+      },
+      "backup-and-restore": {
+        "what": "Cheapest DR — backup data, rebuild on disaster",
+        "key": [
+          "RPO: hours; RTO: hours",
+          "Tools: S3 CRR, RDS snapshot copy, EC2 AMI copy, AWS Backup",
+          "Store CFN templates in S3/CodeCommit to rebuild infra",
+          "Route 53 update DNS to new region after recovery"
+        ],
+        "trap": [
+          "Cheapest but slowest RTO — not for critical apps"
+        ],
+        "when": "Dev/test, non-critical workloads, tight budget"
+      },
+      "pilot-light": {
+        "what": "Keep minimal core running (DB only), scale up on disaster",
+        "key": [
+          "RPO: minutes (continuous DB replication); RTO: minutes-hours (launch app servers)",
+          "DB: RDS cross-region replica or Aurora Global",
+          "App servers: NOT running — launch from AMIs/CFN on failover",
+          "Route 53 health check + failover routing"
+        ],
+        "trap": [
+          "App servers are NOT running (unlike Warm Standby where they are)"
+        ],
+        "when": "Moderate RPO/RTO requirements, low ongoing cost"
+      },
+      "warm-standby": {
+        "what": "Scaled-down full environment always running in DR",
+        "key": [
+          "RPO: near-zero; RTO: minutes (scale up existing infra)",
+          "All components running at minimum capacity",
+          "Failover: scale ASG + promote DB + adjust Route 53 weights"
+        ],
+        "trap": [
+          "Warm Standby=app servers RUNNING (scaled-down); Pilot Light=app servers NOT running"
+        ],
+        "when": "Lower RTO than Pilot Light, business-critical apps, moderate budget"
+      },
+      "multi-site-active-active": {
+        "what": "Full capacity in multiple regions simultaneously",
+        "key": [
+          "RPO: near-zero; RTO: near-zero",
+          "DB: Aurora Global (<1s RPO, <1min RTO) or DynamoDB Global Tables (multi-active)",
+          "Traffic: Route 53 latency/geo or Global Accelerator",
+          "Full infrastructure cost in each region"
+        ],
+        "trap": [
+          "Aurora Global=active-passive (one writer); DynamoDB Global=active-active (all regions writable)",
+          "Most expensive strategy"
+        ],
+        "when": "Mission-critical apps, zero tolerance for downtime or data loss"
+      },
+      "dr-services-reference": {
+        "what": "Quick DR capability reference per service",
+        "key": [
+          "RDS: snapshots cross-region, read replicas cross-region, Multi-AZ (same region)",
+          "Aurora: Global DB RPO<1s RTO<1min, Backtrack (rewind without restore)",
+          "DynamoDB: PITR 35d, Global Tables active-active",
+          "S3: CRR, versioning, Object Lock",
+          "Route 53: health checks + failover routing"
+        ],
+        "trap": [
+          "RDS cross-region read replica must be PROMOTED to become writable — severs replication"
+        ],
+        "when": "Reference when selecting DR approach for each service tier"
+      }
+    },
+    "cost-optimization": {
+      "ec2-cost-optimization": {
+        "what": "EC2 purchasing and sizing strategies",
+        "key": [
+          "On-Demand: flexible, highest price",
+          "Standard RI: 72% off, 1-3yr, fixed family",
+          "Convertible RI: 54% off, can exchange family",
+          "Savings Plans: Compute(66% off, covers Lambda+Fargate) / EC2 Instance(72%)",
+          "Spot: 90% off, interruptible, 2min warning",
+          "Graviton (ARM): up to 40% better price/perf"
+        ],
+        "trap": [
+          "Savings Plans cover Lambda+Fargate; RIs do not",
+          "Convertible RI < discount than Standard RI",
+          "Capacity Reservations alone give no discount — combine with RI/SP"
+        ],
+        "when": "Steady-state=RI or SP; spiky=On-Demand+ASG; batch/fault-tolerant=Spot"
+      },
+      "storage-cost-optimization": {
+        "what": "Reduce storage costs across S3, EBS, EFS",
+        "key": [
+          "S3: Lifecycle policies to cheaper classes; delete incomplete multipart uploads",
+          "S3 Intelligent-Tiering: unpredictable access, no retrieval fee",
+          "EBS: use gp3 over gp2 (20% cheaper); delete unattached volumes",
+          "EBS: move old snapshots to Archive (75% cheaper)",
+          "EFS: Lifecycle → IA tier (85% cheaper)"
+        ],
+        "trap": [
+          "Standard-IA/One Zone-IA: min 30d + 128KB charge — bad for short-lived small objects"
+        ],
+        "when": "Storage is often the biggest hidden cost — always apply lifecycle policies"
+      },
+      "database-cost-optimization": {
+        "what": "Reduce database costs",
+        "key": [
+          "RDS Reserved Instances: up to 69% off",
+          "Aurora Serverless v2: pay for ACUs used (variable workloads)",
+          "Stop dev/test RDS when not in use (still charged for storage)",
+          "DynamoDB On-Demand=unpredictable; Provisioned+ASG=steady/cheaper",
+          "DynamoDB TTL: delete expired items free"
+        ],
+        "trap": [
+          "Query>Scan in DynamoDB — Scan reads entire table (expensive RCUs)"
+        ],
+        "when": "Biggest DB savings: Reserved Instances for prod + stop dev instances on schedule"
+      },
+      "network-cost-optimization": {
+        "what": "Reduce data transfer and networking costs",
+        "key": [
+          "Data IN: always free",
+          "Data OUT to internet: charged",
+          "Same AZ traffic: free",
+          "Cross-AZ: ~$0.01/GB each direction",
+          "S3→CloudFront: free; use CF to reduce direct S3 egress",
+          "S3 Gateway Endpoint: free, eliminates NAT GW costs for S3"
+        ],
+        "trap": [
+          "NAT GW: $0.045/hr + $0.045/GB — can be huge for high-throughput apps",
+          "Replace S3/DynamoDB traffic through NAT GW with free Gateway Endpoints"
+        ],
+        "when": "Check NAT Gateway costs + cross-AZ traffic — often biggest surprise bills"
+      },
+      "cost-management-tools": {
+        "what": "Tools to monitor, analyze, and control AWS costs",
+        "key": [
+          "Cost Explorer: visualize + forecast + rightsizing + RI/SP recommendations",
+          "Budgets: alerts + Budget Actions (auto-stop resources)",
+          "CUR: most granular data → query with Athena",
+          "Compute Optimizer: ML rightsizing for EC2/Lambda/ECS/EBS",
+          "Cost Allocation Tags: track costs by project/team/env"
+        ],
+        "trap": [
+          "CUR=raw data; Cost Explorer=analysis; Budgets=alerts — use all three together"
+        ],
+        "when": "Always set up Budgets first, activate cost allocation tags from day one"
+      }
+    },
+    "exam-traps-and-numbers": {
+      "key-numbers-and-limits": {
+        "what": "Critical limits and numbers for SAA-C03",
+        "key": [
+          "Lambda: 15min, 10GB memory, 10GB /tmp, 250MB unzipped, 1000 concurrent/region",
+          "S3: 5TB max object, 5GB single PUT, 100 buckets/account (soft)",
+          "SQS: 256KB msg, 14d retention, 12h visibility timeout, 20s long poll",
+          "SQS FIFO: 300 TPS (3000 batched)",
+          "Kinesis: 1MB/s write, 2MB/s read per shard",
+          "RDS: 5 read replicas, 35d backup retention",
+          "DynamoDB: 400KB item max, 35d PITR",
+          "VPC: 5 reserved IPs/subnet, /16 max CIDR, 5 VPCs/region",
+          "API GW: 10K RPS, 5K burst, 29s timeout",
+          "KMS: 4KB max direct encrypt, 7-30d delete waiting period"
+        ],
+        "trap": [
+          "These are the most tested numbers — memorize them"
+        ],
+        "when": "Any scenario asking about limits, sizing, or capacity"
+      },
+      "most-common-exam-traps": {
+        "what": "Highest-frequency exam trick questions",
+        "key": [
+          "Multi-AZ=HA not read scaling; Read Replicas=read scaling not HA",
+          "NAT GW in PUBLIC subnet",
+          "SGs=stateful allow-only; NACLs=stateless allow+deny",
+          "VPC Peering NOT transitive",
+          "CloudFront cert MUST be us-east-1",
+          "Direct Connect NOT encrypted by default",
+          "Lambda in VPC loses internet access",
+          "CNAME can't be at zone apex — use Alias",
+          "SCPs don't apply to management account",
+          "Gateway Endpoints (S3/DynamoDB) are FREE"
+        ],
+        "trap": [
+          "One correct answer is usually the CHEAPER or SIMPLER option",
+          "Look for 'automatic', 'managed', 'serverless' keywords"
+        ],
+        "when": "Every exam question — check against these traps before selecting answer"
+      },
+      "service-selection-cheatsheet": {
+        "what": "Choose the right service fast",
+        "key": [
+          "Relational DB→RDS/Aurora; NoSQL→DynamoDB; Cache→ElastiCache; Search→OpenSearch; Warehouse→Redshift",
+          "Containers no K8s→ECS+Fargate; Containers K8s→EKS; Batch jobs→AWS Batch; Short code→Lambda",
+          "Shared Linux files→EFS; Shared Windows files→FSx for Windows; Block storage→EBS; Object storage→S3",
+          "Decouple 1:1→SQS; Fan-out→SNS; Events→EventBridge; Workflow→Step Functions; Real-time stream→Kinesis",
+          "Threat detection→GuardDuty; Vuln scan→Inspector; S3 sensitive data→Macie; Findings dashboard→Security Hub; Forensics→Detective",
+          "App secrets+rotation→Secrets Manager; Config params→SSM Parameter Store; Encryption keys→KMS; Dedicated HSM→CloudHSM"
+        ],
+        "trap": [
+          "If question says 'managed', 'serverless', 'no infrastructure' — lean toward managed services",
+          "If question says 'existing tool/protocol' (SFTP, Kafka, MongoDB) — lean toward compatible managed service"
+        ],
+        "when": "Use as first filter when reading exam scenario questions"
+      }
+    }
+  }
