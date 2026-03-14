@@ -9,7 +9,7 @@ import defaultGroupIcon from "../../Icon-package/Category-Icons_01302026/Arch-Ca
 
 export const metadata: Metadata = {
   title: "SAA-C03 Cheat Sheet",
-  description: "Flip-card cheat sheet for SAA-C03 services",
+  description: "Cheat sheet summaries for SAA-C03 services",
 };
 
 type CheatsheetEntry = {

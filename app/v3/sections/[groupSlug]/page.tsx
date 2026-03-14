@@ -7,8 +7,8 @@ import {
   getV3SubgroupMapByGroupSlug,
   getV3GroupBySlug,
 } from "../../../sectionsDataV3";
+import DocsTopbar from "../../../components/DocsTopbar";
 
-type GroupColorStyle = CSSProperties & { "--group-color": string };
 type GroupPageProps = {
   params: Promise<{ groupSlug: string }>;
 };
@@ -25,44 +25,54 @@ export default async function Page({ params }: GroupPageProps) {
   const subgroupEntries = Object.entries(subgroupMap);
 
   return (
-    <main className="shell">
-      <Link href="/v3" className="back-link">
-        {"<- Back to v3"}
-      </Link>
-      <section className="intro">
-        <p className="kicker">AWS Certified Solutions Architect - Associate</p>
-        <h1>{parentGroup.name}</h1>
-        <p>Each card opens a dedicated section page with clean, focused study points.</p>
-      </section>
+    <main className="docs-page">
+      <DocsTopbar />
+      <div className="docs-shell">
+        <nav className="docs-nav">
+          <Link href="/" className="docs-back">
+            {"<- Home"}
+          </Link>
+          <span className="docs-sep">/</span>
+          <Link href="/v3" className="docs-back">
+            V3
+          </Link>
+        </nav>
 
-      <section className="group-grid" aria-label="SAA-C03 v3 study sections">
-        {subgroupEntries.map(([subgroupSlug, subgroup]) => (
-          <Link
-            key={subgroupSlug}
-            className="group-link"
-            href={`/v3/sections/${groupSlug}/content/${subgroupSlug}`}
-          >
-            <article
-              className="group-card"
-              style={{ "--group-color": subgroup.awsColor } as GroupColorStyle}
-            >
-              <div className="group-color" aria-hidden="true" />
-              <div className="group-content">
-                <div className="group-heading">
+        <header className="docs-header">
+          <p className="docs-kicker">AWS Certified Solutions Architect - Associate</p>
+          <h1 className="docs-title">{parentGroup.name}</h1>
+          <p className="docs-subtitle">Select a service to review the detailed notes.</p>
+        </header>
+
+        <div className="docs-divider" aria-hidden="true" />
+
+        <section className="docs-section" aria-label="SAA-C03 v3 services">
+          <h2 className="docs-section-title">Services</h2>
+          <ul className="docs-service-list">
+            {subgroupEntries.map(([subgroupSlug, subgroup]) => (
+              <li
+                key={subgroupSlug}
+                className="docs-service-item"
+                style={{ "--accent": parentGroup.awsColor } as CSSProperties}
+              >
+                <Link
+                  className="docs-service-link"
+                  href={`/v3/sections/${groupSlug}/content/${subgroupSlug}`}
+                >
                   <Image
                     src={subgroup.icon}
-                    alt={`${subgroup.name} category icon`}
-                    width={38}
-                    height={38}
-                    className="group-icon"
+                    alt={`${subgroup.name} icon`}
+                    width={32}
+                    height={32}
+                    className="docs-service-icon"
                   />
-                  <h2>{subgroup.name}</h2>
-                </div>
-              </div>
-            </article>
-          </Link>
-        ))}
-      </section>
+                  <span>{subgroup.name}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </main>
   );
 }

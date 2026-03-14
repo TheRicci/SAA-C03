@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import GlobalStyles from "@mui/material/GlobalStyles";
 
 type ThemeRegistryProps = {
   children: React.ReactNode;
@@ -12,20 +13,28 @@ type ThemeRegistryProps = {
 const theme = createTheme({
   palette: {
     mode: "light",
+    primary: {
+      main: "#0073bb",
+    },
+    warning: {
+      main: "#d9822b",
+      light: "#fff4e5",
+    },
     background: {
-      default: "#f4f6fb",
+      default: "#ffffff",
       paper: "#ffffff",
     },
     text: {
-      primary: "#101828",
-      secondary: "#475467",
+      primary: "#16191f",
+      secondary: "#5f6b7a",
     },
+    divider: "#d1d5db",
   },
   shape: {
-    borderRadius: 14,
+    borderRadius: 10,
   },
   typography: {
-    fontFamily: "Roboto, \"Helvetica Neue\", Arial, sans-serif",
+    fontFamily: "\"Amazon Ember\", \"Helvetica Neue\", Arial, sans-serif",
   },
 });
 
@@ -34,6 +43,14 @@ export default function ThemeRegistry({ children }: ThemeRegistryProps) {
     <AppRouterCacheProvider options={{ key: "mui" }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <GlobalStyles
+          styles={{
+            body: {
+              backgroundColor: theme.palette.background.default,
+              backgroundImage: "none",
+            },
+          }}
+        />
         {children}
       </ThemeProvider>
     </AppRouterCacheProvider>

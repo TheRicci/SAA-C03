@@ -3,13 +3,13 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { CSSProperties } from "react";
 
 import {
   getV3GroupBySlug,
   getV3SubgroupBySlugs,
   getV3SubgroupMapByGroupSlug,
 } from "../../../../../sectionsDataV3";
+import DocsTopbar from "../../../../../components/DocsTopbar";
 
 type ContentBlock = {
   part: string | number;
@@ -17,7 +17,6 @@ type ContentBlock = {
 };
 
 type ContentByGroupMap = Record<string, Record<string, ContentBlock[]>>;
-type GroupColorStyle = CSSProperties & { "--group-color": string };
 
 function isContentBlock(value: unknown): value is ContentBlock {
   if (typeof value !== "object" || value === null) {
@@ -96,60 +95,64 @@ export default async function ContentPage({ params }: ContentPageProps) {
 
   const contentByGroupMap = await loadContentByGroupMap();
   const contentBlocks = contentByGroupMap[groupSlug]?.[contentSlug] ?? [];
-  const panelStyle: GroupColorStyle = { "--group-color": currentSubgroup.awsColor };
-
   return (
-    <main className="section-shell">
-      <Link href={`/v3/sections/${groupSlug}`} className="back-link">
-        {"<- Back to group"}
-      </Link>
+    <main className="docs-page">
+      <DocsTopbar />
+      <div className="docs-shell">
+        <nav className="docs-nav">
+          <Link href="/" className="docs-back">
+            {"<- Home"}
+          </Link>
+          <span className="docs-sep">/</span>
+          <Link href="/v3" className="docs-back">
+            V3
+          </Link>
+          <span className="docs-sep">/</span>
+          <Link href={`/v3/sections/${groupSlug}`} className="docs-back">
+            {parentGroup.name}
+          </Link>
+        </nav>
 
-      <article className="section-panel" style={panelStyle}>
-        <div className="section-top-border" aria-hidden="true" />
-
-        <header className="section-header">
+        <header className="docs-header docs-header-row">
           <Image
             src={currentSubgroup.icon}
-            alt={`${currentSubgroup.name} category icon`}
-            width={56}
-            height={56}
-            className="section-title-icon"
+            alt={`${currentSubgroup.name} icon`}
+            width={40}
+            height={40}
+            className="docs-icon"
           />
           <div>
-            <p className="section-kicker">{parentGroup.name}</p>
-            <h1>{currentSubgroup.name}</h1>
+            <p className="docs-kicker">{parentGroup.name}</p>
+            <h1 className="docs-title">{currentSubgroup.name}</h1>
           </div>
         </header>
 
-        <section className="section-content">
-          <h2>Section Content</h2>
-          <div className="content-block-list">
+        <div className="docs-divider" aria-hidden="true" />
+
+        <section className="docs-section">
+          <h2 className="docs-section-title">Notes</h2>
+          <div className="docs-block-list">
             {contentBlocks.length > 0 ? (
               contentBlocks.map((block, index) => (
-                <article
-                  key={`${contentSlug}-${String(block.part)}-${index}`}
-                  className="content-block"
-                >
+                <article key={`${contentSlug}-${String(block.part)}-${index}`} className="docs-block">
                   <h3>{block.part}</h3>
-                  <p className="content-block-text">{block.text}</p>
+                  <p>{block.text}</p>
                 </article>
               ))
             ) : (
-              <article className="content-block">
+              <article className="docs-block">
                 <h3>No content yet</h3>
-                <p className="content-block-text">
-                  Content for this service will be added soon.
-                </p>
+                <p>Content for this service will be added soon.</p>
               </article>
             )}
           </div>
         </section>
 
-        <nav className="section-nav" aria-label="Section navigation">
+        <nav className="docs-pager" aria-label="Section navigation">
           <div>
             {previousSubgroupSlug && previousSubgroup ? (
               <Link
-                className="section-nav-link"
+                className="docs-pager-link"
                 href={`/v3/sections/${groupSlug}/content/${previousSubgroupSlug}`}
               >
                 Previous: {previousSubgroup.name}
@@ -159,7 +162,7 @@ export default async function ContentPage({ params }: ContentPageProps) {
           <div>
             {nextSubgroupSlug && nextSubgroup ? (
               <Link
-                className="section-nav-link"
+                className="docs-pager-link"
                 href={`/v3/sections/${groupSlug}/content/${nextSubgroupSlug}`}
               >
                 Next: {nextSubgroup.name}
@@ -167,7 +170,7 @@ export default async function ContentPage({ params }: ContentPageProps) {
             ) : null}
           </div>
         </nav>
-      </article>
+      </div>
     </main>
   );
 }

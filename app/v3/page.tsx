@@ -1,44 +1,44 @@
 import Link from "next/link";
-import Image from "next/image";
-import type { CSSProperties } from "react";
 
-import { v3Groups } from "../sectionsDataV3";
-
-type GroupColorStyle = CSSProperties & { "--group-color": string };
+import { v3Groups, v3SubgroupsByGroupSlug } from "../sectionsDataV3";
+import DocsTopbar from "../components/DocsTopbar";
 
 export default function Page() {
   return (
-    <main className="shell">
-      <section className="intro">
-        <p className="kicker">AWS Certified Solutions Architect - Associate</p>
-        <h1>SAA-C03 Study Map (V3)</h1>
-        <p>Each card opens a dedicated section page with clean, focused study points.</p>
-      </section>
-
-      <section className="group-grid" aria-label="SAA-C03 v3 study sections">
-        {v3Groups.map((group) => (
-          <Link key={group.slug} className="group-link" href={`/v3/sections/${group.slug}`}>
-            <article
-              className="group-card"
-              style={{ "--group-color": group.awsColor } as GroupColorStyle}
-            >
-              <div className="group-color" aria-hidden="true" />
-              <div className="group-content">
-                <div className="group-heading">
-                  <Image
-                    src={group.icon}
-                    alt={`${group.name} category icon`}
-                    width={38}
-                    height={38}
-                    className="group-icon"
-                  />
-                  <h2>{group.name}</h2>
-                </div>
-              </div>
-            </article>
+    <main className="docs-page">
+      <DocsTopbar />
+      <div className="docs-shell">
+        <nav className="docs-nav">
+          <Link href="/" className="docs-back">
+            {"<- Home"}
           </Link>
-        ))}
-      </section>
+        </nav>
+
+        <header className="docs-header">
+          <p className="docs-kicker">AWS Certified Solutions Architect - Associate</p>
+          <h1 className="docs-title">SAA-C03 Study Notes (V3)</h1>
+          <p className="docs-subtitle">Browse the in-scope service categories.</p>
+        </header>
+
+        <div className="docs-divider" aria-hidden="true" />
+
+        <section className="docs-section" aria-label="SAA-C03 v3 categories">
+          <h2 className="docs-section-title">Categories</h2>
+          <ul className="docs-list">
+            {v3Groups.map((group) => {
+              const count = Object.keys(v3SubgroupsByGroupSlug[group.slug] ?? {}).length;
+              return (
+                <li key={group.slug} className="docs-list-item">
+                  <Link className="docs-link" href={`/v3/sections/${group.slug}`}>
+                    {group.name}
+                  </Link>
+                  <span className="docs-count">{count} services</span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      </div>
     </main>
   );
 }
